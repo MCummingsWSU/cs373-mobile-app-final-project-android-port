@@ -31,15 +31,13 @@ public class Game
     private boolean[] keyboard;
     private ArrayList<MovableGameObject> gameWorldObjects;
     private Player gamePlayerCharacter;
-    private final int gamePlayerCharacterStartXCoordinate = gameWidth / 2;
-    private final int gamePlayerCharacterStartYCoordinate = gameHeight - 64;
     private int gamePlayerCharacterContinuesRemaining; //Represents number of collisions player has left before gameOver state evaluates true
     private long gamePointsScore;
     private long gamePointsHighScore = 0;
     private int gamePointsCounter;
     private int gameDifficultyLevel;
-    private int gameFramesPerSecondTarget = 120;
-    private long gameFrameDrawTime = 1000 / gameFramesPerSecondTarget;  //1000 ms / 120 fps ~= 1 frame / 8.33 ms
+    private final int gameFramesPerSecondTarget = 120;
+    private final long gameFrameDrawTime = 1000 / gameFramesPerSecondTarget;  //1000 ms / 120 fps ~= 1 frame / 8.33 ms
     private Random gameRandomSeed; //Will hold a random value generated at initialization that will be used to decide the coordinates to place Obstacles
 
     /**
@@ -119,6 +117,8 @@ public class Game
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Player createMovableGameObjectPlayer()
     {
+        int gamePlayerCharacterStartYCoordinate = gameHeight - 64;
+        int gamePlayerCharacterStartXCoordinate = gameWidth / 2;
         return new Player(gamePlayerCharacterStartXCoordinate, gamePlayerCharacterStartYCoordinate);
     }
 
@@ -216,7 +216,7 @@ public class Game
                     gamePointsScore += 100;
                     gamePointsCounter += 100;
                 }
-                if((int)gamePointsCounter / 5000 > 0)
+                if(gamePointsCounter / 5000 > 0)
                 {
                     if(gameDifficultyLevel < 10)
                     {
@@ -246,7 +246,7 @@ public class Game
                     {
                         gamePointsScore += ((BonusItemGold)movableGameObject).getBonusItemPointValue();
                         gamePointsCounter += ((BonusItemGold)movableGameObject).getBonusItemPointValue();
-                        if((int)gamePointsCounter / 5000 > 0)
+                        if(gamePointsCounter / 5000 > 0)
                         {
                             if(gameDifficultyLevel < 10)
                             {
