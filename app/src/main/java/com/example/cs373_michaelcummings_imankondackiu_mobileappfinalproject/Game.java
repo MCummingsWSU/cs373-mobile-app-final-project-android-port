@@ -3,8 +3,10 @@ package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 import android.graphics.Color;
 import android.graphics.fonts.Font;
 import android.os.Build;
+import android.text.Editable;
 import android.text.method.KeyListener;
 import android.view.KeyEvent;
+import android.view.View;
 
 import androidx.annotation.RequiresApi;
 
@@ -22,11 +24,11 @@ public class Game
 {
     private boolean gameOver;
     //private JPanel gameWindow;
-    //private KeyListener gameInput;
+    private KeyListener gameInput;
     public static final int gameWidth = 480;
     public static final int gameHeight = 854;//9:16 480p aspect ratio
     public String gameTitle = "WorkingTitle";
-    //private boolean[] keyboard;
+    private boolean[] keyboard;
     private ArrayList<MovableGameObject> gameWorldObjects;
     private Player gamePlayerCharacter;
     private final int gamePlayerCharacterStartXCoordinate = gameWidth / 2;
@@ -128,7 +130,7 @@ public class Game
     {
         gameOver = false;
 
-        //keyboard = new boolean[KeyEvent.KEY_LAST]; Replace with declaration of two Buttons
+        keyboard = new boolean[KeyEvent.KEYCODE_LAST_CHANNEL]; //Replace with declaration of two Buttons
         gamePlayerCharacter = createMovableGameObjectPlayer(); //Values subject to change once I see how the game looks on a phone screen
         gamePlayerCharacterContinuesRemaining = 2;
         gamePointsScore = 0;
@@ -136,6 +138,35 @@ public class Game
         gameDifficultyLevel = 0;
         gameRandomSeed = new Random();
         gameWorldObjects = new ArrayList<>();
+        gameInput = new KeyListener()
+        {
+            @Override
+            public int getInputType() {
+                return 0;
+            }
+
+            @Override
+            public boolean onKeyDown(View view, Editable editable, int i, KeyEvent keyEvent) {
+                keyboard[keyEvent.getKeyCode()] = true;
+                return false;
+            }
+
+            @Override
+            public boolean onKeyUp(View view, Editable editable, int i, KeyEvent keyEvent) {
+                keyboard[keyEvent.getKeyCode()] = false;
+                return false;
+            }
+
+            @Override
+            public boolean onKeyOther(View view, Editable editable, KeyEvent keyEvent) {
+                return false;
+            }
+
+            @Override
+            public void clearMetaKeyState(View view, Editable editable, int i) {
+
+            }
+        };
 
         for (int i = 0; i < 10; i++)
         {
@@ -151,21 +182,21 @@ public class Game
     {
         if(gameOver)
         {
-            if(keyboard[KeyEvent.VK_SPACE]) //Lets the player start a new game from the gameOver state, need to replace with Button Event
+            if(keyboard[KeyEvent.KEYCODE_SPACE]) //Lets the player start a new game from the gameOver state, need to replace with Button Event
             {
                 gameInitialize();
             }
             return;
         }
 
-        if(keyboard[KeyEvent.VK_A] || keyboard[KeyEvent.VK_LEFT]) //player should be able to move from [8,448] on the x-axis to keep entire Player object in screen space, replace with Button event
+        if(keyboard[KeyEvent.KEYCODE_A]) //player should be able to move from [8,448] on the x-axis to keep entire Player object in screen space, replace with Button event
         {
             if(gamePlayerCharacter.getGameObjectLocation().x - gamePlayerCharacter.getGameObjectWidth() / 2 > 0)
             {
                 gamePlayerCharacter.translateMovableGameObject((int)gamePlayerCharacter.getMovableGameObjectSpeed() * -1, 0);
             }
         }
-        if(keyboard[KeyEvent.VK_D] || keyboard[KeyEvent.VK_RIGHT]) //replace with Button event
+        if(keyboard[KeyEvent.KEYCODE_D]) //replace with Button event
         {
             if(gamePlayerCharacter.getGameObjectLocation().x + gamePlayerCharacter.getGameObjectWidth() + (gamePlayerCharacter.getGameObjectWidth() / 2)  < gameWidth - gamePlayerCharacter.getGameObjectWidth())
             {
@@ -173,11 +204,7 @@ public class Game
             }
         }
 
-        ArrayList<MovableGameObject> gameWorldObjectsAlreadyRendered = new ArrayList<>();
-        for(MovableGameObject movableGameObject: gameWorldObjects)
-        {
-            gameWorldObjectsAlreadyRendered.add(movableGameObject);
-        }
+        ArrayList<MovableGameObject> gameWorldObjectsAlreadyRendered = new ArrayList<>(gameWorldObjects);
 
         for(MovableGameObject movableGameObject: gameWorldObjectsAlreadyRendered)
         {
@@ -270,16 +297,16 @@ public class Game
         for(MovableGameObject movableGameObject: gameWorldObjects)
         {
             gameGraphics.setColor(movableGameObject.getGameObjectColor());
-            gameGraphics.fillRect((int)movableGameObject.getGameObjectLocation().getX(),
-                    (int)movableGameObject.getGameObjectLocation().getY(),
+            gameGraphics.fillRect((int)movableGameObject.getGameObjectLocation().x,
+                    (int)movableGameObject.getGameObjectLocation().y,
                     (int)movableGameObject.getGameObjectWidth(),
                     (int)movableGameObject.getGameObjectHeight()
             );
         }
 
         gameGraphics.setColor(gamePlayerCharacter.getGameObjectColor());
-        gameGraphics.fillRect((int)gamePlayerCharacter.getGameObjectLocation().getX(),
-                (int)gamePlayerCharacter.getGameObjectLocation().getY(),
+        gameGraphics.fillRect((int)gamePlayerCharacter.getGameObjectLocation().x,
+                (int)gamePlayerCharacter.getGameObjectLocation().y,
                 (int)gamePlayerCharacter.getGameObjectWidth(),
                 (int)gamePlayerCharacter.getGameObjectHeight()
         );
@@ -316,20 +343,6 @@ public class Game
      */
     public void gameGraphicsSetup()
     {
-        gameInput = new KeyListener()
-        {
-            public void keyTyped(KeyEvent key)
-            {
-            }
-            public void keyPressed(KeyEvent key)
-            {
-                keyboard[key.getKeyCode()] = true;
-            }
-            public void keyReleased(KeyEvent key)
-            {
-                keyboard[key.getKeyCode()] = false;
-            }
-        };
 
         gameWindow = new JPanel()
         {
@@ -337,6 +350,7 @@ public class Game
             private long gameTimer = -1000; //-1000 Represents time in milliseconds to wait before beginning game loop
             private boolean gameIsInitialized = false;
 
+            @RequiresApi(api = Build.VERSION_CODES.O)
             public void paint(Graphics gameGraphics)
             {
                 if(!gameIsInitialized)

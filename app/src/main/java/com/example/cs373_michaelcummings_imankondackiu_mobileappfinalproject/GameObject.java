@@ -17,120 +17,120 @@ public interface GameObject
     /**
      * Method to set a GameObject's name
      *
-     * @param   name
+     * @param   name GameObject's name
      */
-    public void setGameObjectName(String name);
+    void setGameObjectName(String name);
 
     /**
      * Method to return a GameObject's name
      *
      * @return  name
      */
-    public String getGameObjectName();
+    String getGameObjectName();
 
     /**
      * Method to set a GameObject's Color
      *
-     * @param   color
+     * @param   color   Android Graphics Color object
      */
-    public void setGameObjectColor(Color color);
+    void setGameObjectColor(Color color);
 
     /**
      * Method to return a GameObject's Color
      *
      * @return  color
      */
-    public Color getGameObjectColor();
+    Color getGameObjectColor();
 
     /**
      * Method to set a GameObject's location on a 2D grid using integer x and y-coordinates
      *
      * @param   x, y
      */
-    public void setGameObjectLocation(int x, int y);
+    void setGameObjectLocation(int x, int y);
 
     /**
      * Method to set a GameObject's location on a 2D grid using double x and y-coordinates
      *
      * @return  x, y
      */
-    public Point getGameObjectLocation();
+    Point getGameObjectLocation();
 
     /**
      * Method to set a GameObject's width on a 2D grid
      *
-     * @param   width
+     * @param   width GameObject's height
      */
-    public void setGameObjectWidth(double width);
+    void setGameObjectWidth(double width);
 
     /**
      * Method to return a GameObject's width
      *
      * @return  width
      */
-    public double getGameObjectWidth();
+    double getGameObjectWidth();
 
     /**
      * Method to set a GameObject's height on a 2D grid
      *
-     * @param height
+     * @param height GameObject's height
      */
-    public void setGameObjectHeight(double height);
+    void setGameObjectHeight(double height);
 
     /**
      * Method to return a GameObject's height
      *
      * @return height
      */
-    public double getGameObjectHeight();
+    double getGameObjectHeight();
 
     /**
      * Method to grow a GameObject's width and height by dw, dh
      *
      * @param   dw, dh
      */
-    public void growGameObjectSize(double dw, double dh);
+    void growGameObjectSize(double dw, double dh);
 
     /**
      * Method to shrink a GameObject's width and height by dw, dh
-     *
      * Calls growGameObjectSize
      *
      * @param   dw, dh
      */
-    public void shrinkGameObjectSize(double dw, double dh);
+    void shrinkGameObjectSize(double dw, double dh);
 
     /**
      * Method to return a Rectangle whose dimensions are equal to the boundaries of the GameObject
      */
-    public Rect getGameObjectBounds();
+    Rect getGameObjectBounds();
 
     /**
      * Method to return true if two GameObjects intersect at any point
      *
      * @return  collision
      */
-    public static boolean collision(GameObject a, GameObject b)
+    static boolean collision(GameObject a, GameObject b)
     {
         if(!a.getGameObjectNoCollide() && !b.getGameObjectNoCollide())
         {
             return Rect.intersects(a.getGameObjectBounds(), b.getGameObjectBounds());
         }
         return false;
-    };
+    }
 
     /**
      * Method to set a boolean indicating whether a GameObject should not collide with other GameObjects
      *
-     * @param   noCollide
+     * @param   noCollide flag representing whether a GameObject will be checked for collision with other GameObjects
+     *                    if True, this GameObject will not cause a method call to GameObject.collision() when intersecting other objects
      */
-    public void setGameObjectNoCollide(boolean noCollide);
+    void setGameObjectNoCollide(boolean noCollide);
 
     /**
      * Method to return true if a GameObject should be not be able to collide with other game objects
      *
      * @return  noCollide
      */
-    public boolean getGameObjectNoCollide();
+    boolean getGameObjectNoCollide();
 }
 

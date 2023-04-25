@@ -90,8 +90,7 @@ public class MovableGameObject implements GameObject
      */
     public Point getGameObjectLocation()
     {
-        Point gameObjectPoint = new Point(this.gameObjectLocation);
-        return gameObjectPoint;
+        return new Point(this.gameObjectLocation);
     }
 
     /**
@@ -167,7 +166,6 @@ public class MovableGameObject implements GameObject
 
     /**
      * Method to shrink a GameObject's width and height by dw, dh
-     *
      * Calls growGameObjectSize
      *
      * @param   dw, dh
@@ -181,7 +179,7 @@ public class MovableGameObject implements GameObject
      * Method to return a Rectangle with dimensions equal to the coordinate boundaries of the GameObject
      */
     public Rect getGameObjectBounds(){
-        return new Rect((int)this.gameObjectLocation.x, (int)this.gameObjectLocation.y, (int)this.gameObjectWidth, (int)this.gameObjectHeight);
+        return new Rect(this.gameObjectLocation.x, this.gameObjectLocation.y, (int)this.gameObjectWidth, (int)this.gameObjectHeight);
     }
 
     /**
@@ -195,7 +193,7 @@ public class MovableGameObject implements GameObject
     }
 
     /**
-     * Method to return true if a GameObject should not collide with otehr GameObjects
+     * Method to return true if a GameObject should not collide with other GameObjects
      *
      * @return  noCollide
      */
