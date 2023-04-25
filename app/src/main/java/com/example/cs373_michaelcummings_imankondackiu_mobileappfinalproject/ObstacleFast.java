@@ -1,5 +1,8 @@
 package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 
+import static android.graphics.Color.RED;
+import static android.graphics.Color.valueOf;
+
 import android.graphics.Color;
 import android.os.Build;
 
@@ -16,7 +19,7 @@ import androidx.annotation.RequiresApi;
 public class ObstacleFast extends Obstacle
 {
     String obstacleName = "ObstacleFast";
-    Color obstacleColor = Color.valueOf(Color.RED);
+    Color obstacleColor = valueOf(RED);
     int obstacleWidth = 16;
     int obstacleHeight = 16;
     int obstacleSpeed = 4;

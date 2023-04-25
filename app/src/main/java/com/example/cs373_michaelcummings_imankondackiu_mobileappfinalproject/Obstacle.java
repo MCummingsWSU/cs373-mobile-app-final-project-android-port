@@ -1,5 +1,7 @@
 package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 
+import static android.graphics.Color.*;
+
 import android.graphics.Color;
 import android.os.Build;
 
@@ -16,7 +18,7 @@ import androidx.annotation.RequiresApi;
 public class Obstacle extends MovableGameObject
 {
     String obstacleName = "Obstacle";
-    Color obstacleColor = Color.valueOf(Color.RED);
+    Color obstacleColor = valueOf(RED);
     int obstacleWidth = 16;
     int obstacleHeight = 16;
     int obstacleSpeed = 2;

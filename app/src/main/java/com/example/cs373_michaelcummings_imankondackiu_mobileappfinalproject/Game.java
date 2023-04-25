@@ -1,6 +1,11 @@
 package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 
+import static android.graphics.Color.valueOf;
+
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.fonts.Font;
 import android.os.Build;
 import android.text.Editable;
@@ -289,51 +294,47 @@ public class Game
      * Method to draw objects after the game's conditions are initialized using Graphics package
      * Need to rewrite to use Android packages!!!
      */
-    public void gameGraphicsInitialRender(Graphics gameGraphics)
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void gameGraphicsInitialRender(Canvas gameGraphics)
     {
-        gameGraphics.setColor(Color.GRAY);
-        gameGraphics.fillRect(0, 0, gameWidth, gameHeight); //Background
+        Paint gameGraphicsBackgroundColor = new Paint(Color.GRAY);
+        Paint gameGraphicsPlayerCharacterColor = new Paint(createMovableGameObjectPlayer().getGameObjectColor().toArgb());
+        Paint gameGraphicsObstacleColor = new Paint(); //Obstacles can have one of two colors
+        Paint gameGraphicsText = new Paint(Color.WHITE);
+
+        gameGraphics.drawRect(0, 0, gameWidth, gameHeight, gameGraphicsBackgroundColor); //Background
 
         for(MovableGameObject movableGameObject: gameWorldObjects)
         {
-            gameGraphics.setColor(movableGameObject.getGameObjectColor());
-            gameGraphics.fillRect((int)movableGameObject.getGameObjectLocation().x,
-                    (int)movableGameObject.getGameObjectLocation().y,
-                    (int)movableGameObject.getGameObjectWidth(),
-                    (int)movableGameObject.getGameObjectHeight()
-            );
+            gameGraphicsObstacleColor.setColor(movableGameObject.getGameObjectColor().toArgb());
+            gameGraphics.drawRect(movableGameObject.getGameObjectBounds(), gameGraphicsObstacleColor);
         }
 
-        gameGraphics.setColor(gamePlayerCharacter.getGameObjectColor());
-        gameGraphics.fillRect((int)gamePlayerCharacter.getGameObjectLocation().x,
-                (int)gamePlayerCharacter.getGameObjectLocation().y,
-                (int)gamePlayerCharacter.getGameObjectWidth(),
-                (int)gamePlayerCharacter.getGameObjectHeight()
-        );
+        gameGraphics.drawRect(gamePlayerCharacter.getGameObjectBounds(), gameGraphicsPlayerCharacterColor);
 
         gameGraphics.setFont(new Font("Consolas", Font.PLAIN, 22));
-        gameGraphics.setColor(Color.WHITE);
-        gameGraphics.drawString("" + gamePointsScore, gameWidth - gameGraphics.getFontMetrics().stringWidth("" + gamePointsScore) - 16, 22);
-        gameGraphics.drawString("" + ("LIVES: " + gamePlayerCharacterContinuesRemaining), 8, 22);
-        gameGraphics.drawString("" + ("DIFFICULTY: " + gameDifficultyLevel), 8, 44);
+        gameGraphics.drawColor(Color.WHITE);
+        gameGraphics.drawText("" + gamePointsScore, gameWidth - gameGraphics.getFontMetrics().stringWidth("" + gamePointsScore) - 16, 22);
+        gameGraphics.drawText("" + ("LIVES: " + gamePlayerCharacterContinuesRemaining), 8, 22);
+        gameGraphics.drawText("" + ("DIFFICULTY: " + gameDifficultyLevel), 8, 44);
 
-        gameGraphics.setColor(Color.GREEN);
-        gameGraphics.drawString("" + ("HIGH SCORE: " + gamePointsHighScore), gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "HIGH SCORE: " + gamePointsHighScore) - 16, 44);
+        gameGraphics.drawColor(Color.GREEN);
+        gameGraphics.drawText("" + ("HIGH SCORE: " + gamePointsHighScore), gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "HIGH SCORE: " + gamePointsHighScore) - 16, 44);
 
         gameGraphics.setFont(getFont().deriveFont(11));
-        gameGraphics.setColor(Color.WHITE);
-        gameGraphics.drawString("" + "Spacebar to start a new game", gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "Spacebar to start a new game") - 16, 55);
-        gameGraphics.drawString("" + "A / Left Arrow to move left", gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "A / Left Arrow to move left") - 16, 66);
-        gameGraphics.drawString("" + "D / Right Arrow to move right", gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "D / Right Arrow to move right") - 16, 77);
-        gameGraphics.drawString("" + "Avoid RED!", gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "Avoid RED!") - 16, 88);
-        gameGraphics.drawString("" + "Touch GOLD for points!", gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "Touch GOLD for points!") - 16, 99);
+        gameGraphics.drawColor(Color.WHITE);
+        gameGraphics.drawText("" + "Spacebar to start a new game", gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "Spacebar to start a new game") - 16, 55);
+        gameGraphics.drawText("" + "A / Left Arrow to move left", gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "A / Left Arrow to move left") - 16, 66);
+        gameGraphics.drawText("" + "D / Right Arrow to move right", gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "D / Right Arrow to move right") - 16, 77);
+        gameGraphics.drawText("" + "Avoid RED!", gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "Avoid RED!") - 16, 88);
+        gameGraphics.drawText("" + "Touch GOLD for points!", gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "Touch GOLD for points!") - 16, 99);
 
 
         if(gameOver)
         {
             gameGraphics.setFont(getFont().deriveFont(88.0f));
-            gameGraphics.drawString("" + "GAME", gameWidth / 2 - gameWidth / 4, gameHeight / 2);
-            gameGraphics.drawString("" + "OVER", gameWidth / 2 - gameWidth / 4, gameHeight / 2 + 88);
+            gameGraphics.drawText("" + "GAME", gameWidth / 2 - gameWidth / 4, gameHeight / 2);
+            gameGraphics.drawText("" + "OVER", gameWidth / 2 - gameWidth / 4, gameHeight / 2 + 88);
         }
     }
 

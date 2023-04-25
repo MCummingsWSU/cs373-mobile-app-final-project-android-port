@@ -179,7 +179,11 @@ public class MovableGameObject implements GameObject
      * Method to return a Rectangle with dimensions equal to the coordinate boundaries of the GameObject
      */
     public Rect getGameObjectBounds(){
-        return new Rect(this.gameObjectLocation.x, this.gameObjectLocation.y, (int)this.gameObjectWidth, (int)this.gameObjectHeight);
+        return new Rect(
+                this.gameObjectLocation.x,
+                this.gameObjectLocation.y,
+                (int)this.gameObjectWidth + this.gameObjectLocation.x,
+                (int)this.gameObjectHeight + this.gameObjectLocation.y);
     }
 
     /**
