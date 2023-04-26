@@ -1,15 +1,20 @@
 package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.fonts.Font;
+import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.text.Editable;
 import android.text.method.KeyListener;
 import android.view.KeyEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
@@ -22,7 +27,7 @@ import java.util.Random;
  * @author Michael Cummings
  * @version 4.24.23
  */
-public class Game
+public class Game extends SurfaceView implements SurfaceHolder.Callback
 {
     private boolean gameOver;
     //private JPanel gameWindow;
@@ -295,6 +300,7 @@ public class Game
     public void gameGraphicsInitialRender(Canvas gameGraphics)
     {
         Paint gameGraphicsBackgroundColor = new Paint(Color.GRAY);
+        Paint gameGraphicsText = new Paint();
 
         gameGraphics.drawRect(0, 0, gameWidth, gameHeight, gameGraphicsBackgroundColor); //Background
 
@@ -305,29 +311,29 @@ public class Game
             gameGraphics.drawRect(movableGameObject.getGameObjectBounds(), movableGameObject.getGameObjectPaint()); //Obstacles and BonusItems
         }
 
-        gameGraphics.setFont(new Font("Consolas", Font.PLAIN, 22));
-        gameGraphics.drawColor(Color.WHITE);
-        gameGraphics.drawText("" + gamePointsScore, gameWidth - gameGraphics.getFontMetrics().stringWidth("" + gamePointsScore) - 16, 22);
-        gameGraphics.drawText("" + ("LIVES: " + gamePlayerCharacterContinuesRemaining), 8, 22);
-        gameGraphics.drawText("" + ("DIFFICULTY: " + gameDifficultyLevel), 8, 44);
+        gameGraphicsText.setTypeface(Typeface.create("Consolas", Typeface.NORMAL));
+        gameGraphicsText.setColor(Color.WHITE);
+        gameGraphics.drawText(String.valueOf(gamePointsScore), gameWidth - gameGraphicsText.measureText(String.valueOf(gamePointsScore)) - 16, 22, gameGraphicsText);
+        gameGraphics.drawText("LIVES: " + gamePlayerCharacterContinuesRemaining, 8, 22, gameGraphicsText);
+        gameGraphics.drawText("DIFFICULTY: " + gameDifficultyLevel, 8, 44, gameGraphicsText);
 
-        gameGraphics.drawColor(Color.GREEN);
-        gameGraphics.drawText("" + ("HIGH SCORE: " + gamePointsHighScore), gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "HIGH SCORE: " + gamePointsHighScore) - 16, 44);
+        gameGraphicsText.setColor(Color.GREEN);
+        gameGraphics.drawText(("HIGH SCORE: " + gamePointsHighScore), gameWidth - gameGraphicsText.measureText(("HIGH SCORE: " + gamePointsHighScore)) - 16, 44, gameGraphicsText);
 
-        gameGraphics.setFont(getFont().deriveFont(11));
-        gameGraphics.drawColor(Color.WHITE);
-        gameGraphics.drawText("" + "Spacebar to start a new game", gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "Spacebar to start a new game") - 16, 55);
-        gameGraphics.drawText("" + "A / Left Arrow to move left", gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "A / Left Arrow to move left") - 16, 66);
-        gameGraphics.drawText("" + "D / Right Arrow to move right", gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "D / Right Arrow to move right") - 16, 77);
-        gameGraphics.drawText("" + "Avoid RED!", gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "Avoid RED!") - 16, 88);
-        gameGraphics.drawText("" + "Touch GOLD for points!", gameWidth - gameGraphics.getFontMetrics().stringWidth("" + "Touch GOLD for points!") - 16, 99);
+        gameGraphicsText.setColor(Color.WHITE);
+        gameGraphicsText.setTextSize(11);
+        gameGraphics.drawText("Spacebar to start a new game", gameWidth - gameGraphicsText.measureText("Spacebar to start a new game") - 16, 55, gameGraphicsText);
+        gameGraphics.drawText("A to move left", gameWidth - gameGraphicsText.measureText("A to move left") - 16, 66, gameGraphicsText);
+        gameGraphics.drawText("D to move right", gameWidth - gameGraphicsText.measureText("D to move right") - 16, 77, gameGraphicsText);
+        gameGraphics.drawText("Avoid RED!", gameWidth - gameGraphicsText.measureText("Avoid RED!") - 16, 88, gameGraphicsText);
+        gameGraphics.drawText("Touch GOLD for points!", gameWidth - gameGraphicsText.measureText("Touch GOLD for points!") - 16, 99, gameGraphicsText);
 
 
         if(gameOver)
         {
-            gameGraphics.setFont(getFont().deriveFont(88.0f));
-            gameGraphics.drawText("" + "GAME", gameWidth / 2 - gameWidth / 4, gameHeight / 2);
-            gameGraphics.drawText("" + "OVER", gameWidth / 2 - gameWidth / 4, gameHeight / 2 + 88);
+            gameGraphicsText.setTextSize(88);
+            gameGraphics.drawText("GAME", gameWidth / 2 - gameWidth / 4, gameHeight / 2, gameGraphicsText);
+            gameGraphics.drawText("OVER", gameWidth / 2 - gameWidth / 4, gameHeight / 2 + 88, gameGraphicsText);
         }
     }
 
@@ -345,13 +351,13 @@ public class Game
             private boolean gameIsInitialized = false;
 
             @RequiresApi(api = Build.VERSION_CODES.O)
-            public void paint(Graphics gameGraphics)
+            public void paint(Canvas gameGraphics)
             {
                 if(!gameIsInitialized)
                     gameInitialize();
                 gameIsInitialized = true;
 
-                gameGraphics.clearRect(0, 0, gameWidth, gameHeight);
+                gameGraphics.drawColor(Color.TRANSPARENT, PorterDuff.Mode.MULTIPLY);
 
                 long gameTimeCurrent = System.currentTimeMillis();
                 long gameTimeDelta = gameTimeCurrent - gameTimeSinceLastLoop;
@@ -376,25 +382,27 @@ public class Game
      * Default constructor for objects of class Game
      * Need to change method calls to reflect change to Android environment
      */
-    public Game()
-    {
-        newGame = this;
-        newGame.setVisible(false);
-        newGame.setSize(gameWidth, gameHeight);
-        newGame.setResizable(false);
-        newGame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        newGame.setTitle(gameTitle);
+    public Game(Context gameContext) {
+        super(gameContext);
 
-        gameGraphicsSetup();
-        newGame.addKeyListener(gameInput);
+        SurfaceHolder surfaceHolder = getHolder();
+        surfaceHolder.addCallback(this);
 
-        newGame.add(gameWindow);
-        newGame.setVisible(true);
+        setFocusable(true);
     }
 
-    public static Game newGame;
-    public static void main(String[] args)
-    {
-        new Game();
+    @Override
+    public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
+        gameGraphicsSetup();
+    }
+
+    @Override
+    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
+
     }
 }
