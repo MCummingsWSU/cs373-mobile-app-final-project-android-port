@@ -1,9 +1,5 @@
 package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 
-import static android.graphics.Color.RED;
-import static android.graphics.Color.valueOf;
-
-import android.graphics.Color;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -19,9 +15,6 @@ import androidx.annotation.RequiresApi;
 public class ObstacleFast extends Obstacle
 {
     String obstacleName = "ObstacleFast";
-    Color obstacleColor = valueOf(RED);
-    int obstacleWidth = 16;
-    int obstacleHeight = 16;
     int obstacleSpeed = 4;
 
     /**
@@ -31,6 +24,7 @@ public class ObstacleFast extends Obstacle
     {
         this.setGameObjectName(obstacleName);
         this.setGameObjectColor(obstacleColor);
+        this.obstaclePaint.setColor(obstacleColor.toArgb());
         this.setGameObjectLocation(0, 0);
         this.setGameObjectWidth(obstacleWidth);
         this.setGameObjectHeight(obstacleHeight);
@@ -45,6 +39,7 @@ public class ObstacleFast extends Obstacle
     {
         this.setGameObjectName(obstacleName);
         this.setGameObjectColor(obstacleColor);
+        this.obstaclePaint.setColor(obstacleColor.toArgb());
         this.setGameObjectLocation(x, y);
         this.setGameObjectWidth(obstacleWidth);
         this.setGameObjectHeight(obstacleHeight);

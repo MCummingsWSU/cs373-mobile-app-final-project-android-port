@@ -1,11 +1,8 @@
 package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 
-import static android.graphics.Color.valueOf;
-
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.fonts.Font;
 import android.os.Build;
 import android.text.Editable;
@@ -298,19 +295,15 @@ public class Game
     public void gameGraphicsInitialRender(Canvas gameGraphics)
     {
         Paint gameGraphicsBackgroundColor = new Paint(Color.GRAY);
-        Paint gameGraphicsPlayerCharacterColor = new Paint(createMovableGameObjectPlayer().getGameObjectColor().toArgb());
-        Paint gameGraphicsObstacleColor = new Paint(); //Obstacles can have one of two colors
-        Paint gameGraphicsText = new Paint(Color.WHITE);
 
         gameGraphics.drawRect(0, 0, gameWidth, gameHeight, gameGraphicsBackgroundColor); //Background
 
+        gameGraphics.drawRect(gamePlayerCharacter.getGameObjectBounds(), gamePlayerCharacter.getGameObjectPaint()); //Player
+
         for(MovableGameObject movableGameObject: gameWorldObjects)
         {
-            gameGraphicsObstacleColor.setColor(movableGameObject.getGameObjectColor().toArgb());
-            gameGraphics.drawRect(movableGameObject.getGameObjectBounds(), gameGraphicsObstacleColor);
+            gameGraphics.drawRect(movableGameObject.getGameObjectBounds(), movableGameObject.getGameObjectPaint()); //Obstacles and BonusItems
         }
-
-        gameGraphics.drawRect(gamePlayerCharacter.getGameObjectBounds(), gameGraphicsPlayerCharacterColor);
 
         gameGraphics.setFont(new Font("Consolas", Font.PLAIN, 22));
         gameGraphics.drawColor(Color.WHITE);

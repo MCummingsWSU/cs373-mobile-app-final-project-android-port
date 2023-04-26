@@ -1,6 +1,7 @@
 package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 
@@ -41,6 +42,11 @@ public interface GameObject
      * @return  color
      */
     Color getGameObjectColor();
+
+    /**
+     * Method to return a GameObject's Paint
+     */
+    Paint getGameObjectPaint();
 
     /**
      * Method to set a GameObject's location on a 2D grid using integer x and y-coordinates

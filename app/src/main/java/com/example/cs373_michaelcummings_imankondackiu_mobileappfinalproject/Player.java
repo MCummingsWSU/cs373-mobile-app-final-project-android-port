@@ -1,6 +1,7 @@
 package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -17,6 +18,7 @@ public class Player extends MovableGameObject
 {
     String playerName = "Player";
     Color playerColor = Color.valueOf(Color.BLACK);
+    Paint playerPaint = new Paint();
     int playerWidth = 16;
     int playerHeight = 16;
     int playerSpeed = 4;
@@ -28,6 +30,7 @@ public class Player extends MovableGameObject
     {
         this.setGameObjectName(playerName);
         this.setGameObjectColor(playerColor);
+        this.playerPaint.setColor(playerColor.toArgb());
         this.setGameObjectWidth(playerWidth);
         this.setGameObjectHeight(playerHeight);
         this.setGameObjectLocation(0, 0);
@@ -42,6 +45,7 @@ public class Player extends MovableGameObject
     {
         this.setGameObjectName(playerName);
         this.setGameObjectColor(playerColor);
+        this.playerPaint.setColor(playerColor.toArgb());
         this.setGameObjectWidth(playerWidth);
         this.setGameObjectHeight(playerHeight);
         this.setGameObjectLocation(x, y);

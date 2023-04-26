@@ -3,6 +3,7 @@ package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 import static android.graphics.Color.valueOf;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
@@ -24,6 +25,7 @@ public class MovableGameObject implements GameObject
     private String gameObjectName;
     private Color gameObjectColor;
     private boolean gameObjectNoCollide;
+    private Paint gameObjectPaint = new Paint();
 
     /**
      * Default constructor for MovableGameObject
@@ -33,6 +35,7 @@ public class MovableGameObject implements GameObject
     {
         this.gameObjectName = "ObjectName";
         this.gameObjectColor = valueOf(Color.RED);
+        this.gameObjectPaint.setColor(this.gameObjectColor.toArgb());
         this.gameObjectLocation.set(0,0);
         this.gameObjectWidth = 1;
         this.gameObjectHeight = 1;
@@ -43,10 +46,12 @@ public class MovableGameObject implements GameObject
     /**
      * Overloaded constructor for objects of class MovableGameObject
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public MovableGameObject(Color color, int locationX, int locationY, String name, double width, double height, double speed, boolean noCollide)
     {
         this.gameObjectName = name;
         this.gameObjectColor = color;
+        this.gameObjectPaint.setColor(this.gameObjectColor.toArgb());
         this.gameObjectLocation.set(locationX, locationY);
         this.gameObjectWidth = width;
         this.gameObjectHeight = height;
@@ -75,10 +80,18 @@ public class MovableGameObject implements GameObject
     }
 
     /**
+     * Method to return a GameObject's Paint
+     *
+     * @return Paint
+     */
+    public Paint getGameObjectPaint() {return this.gameObjectPaint;}
+
+    /**
      * Method to manually set a GameObject's Point location
      *
      * @param   x,y intended x-coordinate and y-coordinate of the object
      */
+
     public void setGameObjectLocation(int x, int y) {
         this.gameObjectLocation.set(x, y);
     }
@@ -88,10 +101,7 @@ public class MovableGameObject implements GameObject
      *
      * @return  Point
      */
-    public Point getGameObjectLocation()
-    {
-        return new Point(this.gameObjectLocation);
-    }
+    public Point getGameObjectLocation() {return this.gameObjectLocation;}
 
     /**
      * Method to manually set a GameObject's name
