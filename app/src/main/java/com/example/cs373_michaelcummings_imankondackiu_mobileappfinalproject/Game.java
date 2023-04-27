@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.text.Editable;
@@ -30,7 +29,6 @@ import java.util.Random;
 public class Game extends SurfaceView implements SurfaceHolder.Callback
 {
     private boolean gameOver;
-    //private JPanel gameWindow;
     private KeyListener gameInput;
     public static final int gameWidth = 480;
     public static final int gameHeight = 854;//9:16 480p aspect ratio
@@ -338,45 +336,35 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback
     }
 
     /**
-     * Method to render the JPanel to the screen and animate it
-     * Need to replace entirely, Android doesn't use JPanel
+     * Method to render drawn objects to the screen
      */
-    public void gameGraphicsSetup()
-    {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void gameGraphicsSetup(Canvas gameGraphics) {
+        long gameTimeSinceLastLoop = System.currentTimeMillis();
+        long gameTimer = -1000; //-1000 Represents time in milliseconds to wait before beginning game loop
+        boolean gameIsInitialized = false;
 
-        gameWindow = new JPanel()
-        {
-            private long gameTimeSinceLastLoop = System.currentTimeMillis();
-            private long gameTimer = -1000; //-1000 Represents time in milliseconds to wait before beginning game loop
-            private boolean gameIsInitialized = false;
+            if(!gameIsInitialized)
+                gameInitialize();
+            gameIsInitialized = true;
 
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            public void paint(Canvas gameGraphics)
+            //gameGraphics.drawColor(Color.TRANSPARENT, PorterDuff.Mode.MULTIPLY);
+
+            long gameTimeCurrent = System.currentTimeMillis();
+            long gameTimeDelta = gameTimeCurrent - gameTimeSinceLastLoop;
+
+            gameTimeSinceLastLoop = gameTimeCurrent;
+
+            gameTimer += gameTimeDelta;
+
+            while(gameTimer >= gameFrameDrawTime)
             {
-                if(!gameIsInitialized)
-                    gameInitialize();
-                gameIsInitialized = true;
-
-                gameGraphics.drawColor(Color.TRANSPARENT, PorterDuff.Mode.MULTIPLY);
-
-                long gameTimeCurrent = System.currentTimeMillis();
-                long gameTimeDelta = gameTimeCurrent - gameTimeSinceLastLoop;
-
-                gameTimeSinceLastLoop = gameTimeCurrent;
-
-                gameTimer += gameTimeDelta;
-
-                while(gameTimer >= gameFrameDrawTime)
-                {
-                    gameTimer -= gameFrameDrawTime;
-                    gameTimePulse();
-                }
-
-                gameGraphicsInitialRender(gameGraphics);
-                repaint();
+                gameTimer -= gameFrameDrawTime;
+                gameTimePulse();
             }
-        };
-    }
+
+            gameGraphicsInitialRender(gameGraphics);
+        }
 
     /**
      * Default constructor for objects of class Game
@@ -391,9 +379,11 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback
         setFocusable(true);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
-        gameGraphicsSetup();
+        Canvas gameGraphics = new Canvas();
+        gameGraphicsSetup(gameGraphics);
     }
 
     @Override
