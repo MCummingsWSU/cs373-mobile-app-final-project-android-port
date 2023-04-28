@@ -1,14 +1,17 @@
 package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 
 import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowManager;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class GameActivity extends AppCompatActivity {
 
     private Game gameView;
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

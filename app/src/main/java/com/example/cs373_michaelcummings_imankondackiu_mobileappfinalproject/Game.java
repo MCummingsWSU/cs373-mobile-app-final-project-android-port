@@ -25,7 +25,7 @@ public class Game extends SurfaceView implements Runnable {
     private boolean gameOver;
     public int gameWidth;
     public int gameHeight;//9:16 480p aspect ratio
-    public float gameAspectRatioX, gameAspectRatioY;
+    public static float gameAspectRatioX, gameAspectRatioY;
     private Background gameBackground;
     private Paint gamePaint;
     private ArrayList<MovableGameObject> gameWorldObjects;

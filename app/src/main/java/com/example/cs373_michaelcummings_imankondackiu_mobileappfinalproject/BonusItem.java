@@ -27,6 +27,7 @@ public class BonusItem extends MovableGameObject
      */
     public BonusItem()
     {
+        super(res);
         this.setGameObjectName(bonusItemName);
         this.setGameObjectColor(bonusItemColor);
         this.setGameObjectLocation(0, 0);
@@ -41,6 +42,7 @@ public class BonusItem extends MovableGameObject
      */
     public BonusItem(int x, int y)
     {
+        super(res);
         this.setGameObjectName(bonusItemName);
         this.setGameObjectColor(bonusItemColor);
         this.setGameObjectLocation(x, y);

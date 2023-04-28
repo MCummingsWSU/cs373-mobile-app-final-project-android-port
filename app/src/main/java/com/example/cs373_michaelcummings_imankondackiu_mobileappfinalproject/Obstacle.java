@@ -30,6 +30,7 @@ public class Obstacle extends MovableGameObject
      */
     public Obstacle()
     {
+        super(res);
         this.setGameObjectName(obstacleName);
         this.setGameObjectColor(obstacleColor);
         this.obstaclePaint.setColor(obstacleColor.toArgb());
@@ -45,6 +46,7 @@ public class Obstacle extends MovableGameObject
      */
     public Obstacle(int x, int y)
     {
+        super(res);
         this.setGameObjectName(obstacleName);
         this.setGameObjectColor(obstacleColor);
         this.obstaclePaint.setColor(obstacleColor.toArgb());

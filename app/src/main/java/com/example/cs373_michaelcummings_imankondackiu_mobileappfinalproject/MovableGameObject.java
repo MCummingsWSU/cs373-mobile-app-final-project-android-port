@@ -1,7 +1,8 @@
 package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 
-import static android.graphics.Color.valueOf;
-
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -16,7 +17,7 @@ import androidx.annotation.RequiresApi;
  * Rewritten for Android Studio
  *
  * @author Michael Cummings
- * @version 4.24.2023
+ * @version 4.28.2023
  */
 public class MovableGameObject implements GameObject
 {
@@ -26,6 +27,8 @@ public class MovableGameObject implements GameObject
     private Color gameObjectColor;
     private boolean gameObjectNoCollide;
     private Paint gameObjectPaint = new Paint();
+    private Bitmap gameObjectBitmap;
+    private Resources gameObjectResources;
 
     /**
      * Default constructor for MovableGameObject
@@ -34,13 +37,19 @@ public class MovableGameObject implements GameObject
     public MovableGameObject()
     {
         this.gameObjectName = "ObjectName";
-        this.gameObjectColor = valueOf(Color.RED);
+        this.gameObjectColor = Color.valueOf(Color.RED);
         this.gameObjectPaint.setColor(this.gameObjectColor.toArgb());
+        this.gameObjectBitmap = BitmapFactory.decodeResource(this.gameObjectResources, R.color.red);
         this.gameObjectLocation.set(0,0);
         this.gameObjectWidth = 1;
         this.gameObjectHeight = 1;
         this.gameObjectSpeed = 0;
         this.gameObjectNoCollide = false;
+
+        this.gameObjectWidth *= (int) Game.gameAspectRatioX;
+        this.gameObjectHeight *= (int) Game.gameAspectRatioY;
+
+        this.gameObjectBitmap = Bitmap.createScaledBitmap(gameObjectBitmap, (int)gameObjectWidth, (int)gameObjectHeight, false);
     }
 
     /**
@@ -52,6 +61,7 @@ public class MovableGameObject implements GameObject
         this.gameObjectName = name;
         this.gameObjectColor = color;
         this.gameObjectPaint.setColor(this.gameObjectColor.toArgb());
+        this.gameObjectBitmap = BitmapFactory.decodeResource(gameObjectResources, R.color.red);
         this.gameObjectLocation.set(locationX, locationY);
         this.gameObjectWidth = width;
         this.gameObjectHeight = height;
