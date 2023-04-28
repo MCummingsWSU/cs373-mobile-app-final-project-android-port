@@ -4,17 +4,14 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.text.Editable;
 import android.text.method.KeyListener;
 import android.view.KeyEvent;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
@@ -25,9 +22,9 @@ import java.util.Random;
  * Rewritten for Android Studio
  *
  * @author Michael Cummings
- * @version 4.24.23
+ * @version 4.27.23
  */
-public class Game extends SurfaceView implements SurfaceHolder.Callback
+public class Game extends SurfaceView implements Runnable
 {
     private boolean gameOver;
     public static final int gameWidth = 480;
@@ -179,8 +176,9 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback
     /**
      * Method detailing the actions the game should take every time the frame refreshes, depending on user input and the state of the game
      */
+    @Override
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void gameTimePulse()
+    public void run()
     {
         if(gameOver)
         {
@@ -333,60 +331,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback
     }
 
     /**
-     * Method to render drawn objects to the screen
-     */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void gameGraphicsSetup(Canvas gameGraphics) {
-        long gameTimeSinceLastLoop = System.currentTimeMillis();
-        long gameTimer = -1000; //-1000 Represents time in milliseconds to wait before beginning game loop
-
-        gameInitialize();
-
-        gameGraphics.drawColor(Color.TRANSPARENT, PorterDuff.Mode.MULTIPLY);
-
-            long gameTimeCurrent = System.currentTimeMillis();
-            long gameTimeDelta = gameTimeCurrent - gameTimeSinceLastLoop;
-
-        gameTimer += gameTimeDelta;
-
-        int gameFramesPerSecondTarget = 120;
-        long gameFrameDrawTime = 1000 / gameFramesPerSecondTarget;
-        while(gameTimer >= gameFrameDrawTime)
-            {
-                gameTimer -= gameFrameDrawTime;
-                gameTimePulse();
-            }
-
-            gameGraphicsInitialRender(gameGraphics);
-        }
-
-    /**
      * Default constructor for objects of class Game
      * Need to change method calls to reflect change to Android environment
      */
-    public Game(Context gameContext) {
-        super(gameContext);
+    public Game(Context context) {
+        super(context);
 
-        SurfaceHolder surfaceHolder = getHolder();
-        surfaceHolder.addCallback(this);
-
-        setFocusable(true);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
-        Canvas gameGraphics = new Canvas();
-        gameGraphicsSetup(gameGraphics);
-    }
-
-    @Override
-    public void surfaceChanged(@NonNull SurfaceHolder surfaceHolder, int i, int i1, int i2) {
 
     }
 
-    @Override
-    public void surfaceDestroyed(@NonNull SurfaceHolder surfaceHolder) {
-
-    }
 }
