@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.text.Editable;
@@ -29,7 +30,6 @@ import java.util.Random;
 public class Game extends SurfaceView implements SurfaceHolder.Callback
 {
     private boolean gameOver;
-    private KeyListener gameInput;
     public static final int gameWidth = 480;
     public static final int gameHeight = 854;//9:16 480p aspect ratio
     public String gameTitle = "WorkingTitle";
@@ -41,8 +41,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback
     private long gamePointsHighScore = 0;
     private int gamePointsCounter;
     private int gameDifficultyLevel;
-    private final int gameFramesPerSecondTarget = 120;
-    private final long gameFrameDrawTime = 1000 / gameFramesPerSecondTarget;  //1000 ms / 120 fps ~= 1 frame / 8.33 ms
     private Random gameRandomSeed; //Will hold a random value generated at initialization that will be used to decide the coordinates to place Obstacles
 
     /**
@@ -143,8 +141,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback
         gameDifficultyLevel = 0;
         gameRandomSeed = new Random();
         gameWorldObjects = new ArrayList<>();
-        gameInput = new KeyListener()
-        {
+        KeyListener gameInput = new KeyListener() {
             @Override
             public int getInputType() {
                 return 0;
@@ -330,8 +327,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback
         if(gameOver)
         {
             gameGraphicsText.setTextSize(88);
-            gameGraphics.drawText("GAME", gameWidth / 2 - gameWidth / 4, gameHeight / 2, gameGraphicsText);
-            gameGraphics.drawText("OVER", gameWidth / 2 - gameWidth / 4, gameHeight / 2 + 88, gameGraphicsText);
+            gameGraphics.drawText("GAME", (float)gameWidth / 2 - (float)gameWidth / 4, (float)gameHeight / 2, gameGraphicsText);
+            gameGraphics.drawText("OVER", (float)gameWidth / 2 - (float)gameWidth / 4, (float)gameHeight / 2 + 88, gameGraphicsText);
         }
     }
 
@@ -342,22 +339,19 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback
     public void gameGraphicsSetup(Canvas gameGraphics) {
         long gameTimeSinceLastLoop = System.currentTimeMillis();
         long gameTimer = -1000; //-1000 Represents time in milliseconds to wait before beginning game loop
-        boolean gameIsInitialized = false;
 
-            if(!gameIsInitialized)
-                gameInitialize();
-            gameIsInitialized = true;
+        gameInitialize();
 
-            //gameGraphics.drawColor(Color.TRANSPARENT, PorterDuff.Mode.MULTIPLY);
+        gameGraphics.drawColor(Color.TRANSPARENT, PorterDuff.Mode.MULTIPLY);
 
             long gameTimeCurrent = System.currentTimeMillis();
             long gameTimeDelta = gameTimeCurrent - gameTimeSinceLastLoop;
 
-            gameTimeSinceLastLoop = gameTimeCurrent;
+        gameTimer += gameTimeDelta;
 
-            gameTimer += gameTimeDelta;
-
-            while(gameTimer >= gameFrameDrawTime)
+        int gameFramesPerSecondTarget = 120;
+        long gameFrameDrawTime = 1000 / gameFramesPerSecondTarget;
+        while(gameTimer >= gameFrameDrawTime)
             {
                 gameTimer -= gameFrameDrawTime;
                 gameTimePulse();
