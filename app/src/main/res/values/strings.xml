@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">CS373-MichaelCummings-ImanKondackiu-MobileAppFinalProject</string>
+    <string name="app_name_formatted">CS-373 Operating Systems Final Project</string>
+    <string name="app_title">Obstacle Dodging Game</string>
+    <string name="app_authors">Project by Michael Cummings and Iman Kondackiu</string>
+    <string name="app_start_button">Touch Here to Start</string>
 </resources>
