@@ -126,7 +126,7 @@ public class Game extends SurfaceView implements Runnable {
     public void gameInitialize()
     {
         gameOver = false;
-        gamePlayerCharacter = createMovableGameObjectPlayer(); //Values subject to change once I see how the game looks on a phone screen
+        gamePlayerCharacter = createMovableGameObjectPlayer();
         gamePlayerCharacterContinuesRemaining = 2;
         gamePointsScore = 0;
         gamePointsCounter = 0;
@@ -219,10 +219,11 @@ public class Game extends SurfaceView implements Runnable {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void gameFrameDraw(){
         if(getHolder().getSurface().isValid()){
             Canvas gameCanvas = getHolder().lockCanvas();
-            gameCanvas.drawBitmap(gameBackground.background, gameBackground.x, gameBackground.y, gamePaint);
+            gameCanvas.drawRect(gameBackground.getGameObjectBounds(), gameBackground.getGameObjectPaint());
             gameCanvas.drawRect(gamePlayerCharacter.getGameObjectBounds(), gamePlayerCharacter.getGameObjectPaint());
             for(MovableGameObject movableGameObject: gameWorldObjects)
             {
@@ -287,15 +288,15 @@ public class Game extends SurfaceView implements Runnable {
      * Need to change method calls to reflect change to Android environment
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Game(Context context, int gameWidth, int gameHeight) {
+    public Game(Context context, int screenX, int screenY) {
         super(context);
 
-        this.gameWidth = gameWidth;
-        this.gameHeight = gameHeight;
-        gameAspectRatioX = 1920f / gameWidth;
-        gameAspectRatioY = 1080f / gameHeight; //Using common values of 1920 x 1080 resolution
+        this.gameWidth = screenX;
+        this.gameHeight = screenY;
+        gameAspectRatioX = 1920f / screenX;
+        gameAspectRatioY = 1080f / screenY; //Using common values of 1920 x 1080 resolution
 
-        gameBackground = new Background(gameWidth, gameHeight, getResources());
+        gameBackground = new Background();
 
         gamePaint = new Paint();
 
