@@ -6,11 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.text.Editable;
-import android.text.method.KeyListener;
-import android.view.KeyEvent;
 import android.view.SurfaceView;
-import android.view.View;
 
 import androidx.annotation.RequiresApi;
 
@@ -24,13 +20,14 @@ import java.util.Random;
  * @author Michael Cummings
  * @version 4.27.23
  */
-public class Game extends SurfaceView implements Runnable
-{
+public class Game extends SurfaceView implements Runnable {
+    private Thread gameThread;
     private boolean gameOver;
-    public static final int gameWidth = 480;
-    public static final int gameHeight = 854;//9:16 480p aspect ratio
-    public String gameTitle = "WorkingTitle";
-    private boolean[] keyboard;
+    public int gameWidth;
+    public int gameHeight;//9:16 480p aspect ratio
+    public float gameAspectRatioX, gameAspectRatioY;
+    private Background gameBackground;
+    private Paint gamePaint;
     private ArrayList<MovableGameObject> gameWorldObjects;
     private Player gamePlayerCharacter;
     private int gamePlayerCharacterContinuesRemaining; //Represents number of collisions player has left before gameOver state evaluates true
@@ -129,8 +126,6 @@ public class Game extends SurfaceView implements Runnable
     public void gameInitialize()
     {
         gameOver = false;
-
-        keyboard = new boolean[KeyEvent.KEYCODE_LAST_CHANNEL]; //Replace with declaration of two Buttons
         gamePlayerCharacter = createMovableGameObjectPlayer(); //Values subject to change once I see how the game looks on a phone screen
         gamePlayerCharacterContinuesRemaining = 2;
         gamePointsScore = 0;
@@ -138,39 +133,13 @@ public class Game extends SurfaceView implements Runnable
         gameDifficultyLevel = 0;
         gameRandomSeed = new Random();
         gameWorldObjects = new ArrayList<>();
-        KeyListener gameInput = new KeyListener() {
-            @Override
-            public int getInputType() {
-                return 0;
-            }
-
-            @Override
-            public boolean onKeyDown(View view, Editable editable, int i, KeyEvent keyEvent) {
-                keyboard[keyEvent.getKeyCode()] = true;
-                return false;
-            }
-
-            @Override
-            public boolean onKeyUp(View view, Editable editable, int i, KeyEvent keyEvent) {
-                keyboard[keyEvent.getKeyCode()] = false;
-                return false;
-            }
-
-            @Override
-            public boolean onKeyOther(View view, Editable editable, KeyEvent keyEvent) {
-                return false;
-            }
-
-            @Override
-            public void clearMetaKeyState(View view, Editable editable, int i) {
-
-            }
-        };
 
         for (int i = 0; i < 10; i++)
         {
             gameWorldObjects.add(movableGameObjectObstacleSpawner());
         }
+
+        run();
     }
 
     /**
@@ -178,110 +147,111 @@ public class Game extends SurfaceView implements Runnable
      */
     @Override
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void run()
-    {
-        if(gameOver)
-        {
-            if(keyboard[KeyEvent.KEYCODE_SPACE]) //Lets the player start a new game from the gameOver state, need to replace with Button Event
-            {
-                gameInitialize();
-            }
-            return;
+    public void run() {
+        while (!gameOver) {
+
+            gameUpdate();
+            gameFrameDraw();
+            gameThreadSleep();
+
         }
 
-        if(keyboard[KeyEvent.KEYCODE_A]) //player should be able to move from [8,448] on the x-axis to keep entire Player object in screen space, replace with Button event
-        {
-            if(gamePlayerCharacter.getGameObjectLocation().x - gamePlayerCharacter.getGameObjectWidth() / 2 > 0)
-            {
-                gamePlayerCharacter.translateMovableGameObject((int)gamePlayerCharacter.getMovableGameObjectSpeed() * -1, 0);
-            }
-        }
-        if(keyboard[KeyEvent.KEYCODE_D]) //replace with Button event
-        {
-            if(gamePlayerCharacter.getGameObjectLocation().x + gamePlayerCharacter.getGameObjectWidth() + (gamePlayerCharacter.getGameObjectWidth() / 2)  < gameWidth - gamePlayerCharacter.getGameObjectWidth())
-            {
-                gamePlayerCharacter.translateMovableGameObject((int)gamePlayerCharacter.getMovableGameObjectSpeed(), 0);
-            }
-        }
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void gameUpdate(){
         ArrayList<MovableGameObject> gameWorldObjectsAlreadyRendered = new ArrayList<>(gameWorldObjects);
 
-        for(MovableGameObject movableGameObject: gameWorldObjectsAlreadyRendered)
-        {
-            movableGameObject.translateMovableGameObject(0, (int)movableGameObject.getMovableGameObjectSpeed());
-            if(movableGameObject.getGameObjectLocation().y - movableGameObject.getGameObjectHeight() > gameHeight)
-            {
-                if(!(movableGameObject instanceof BonusItem))
-                {
+        for (MovableGameObject movableGameObject : gameWorldObjectsAlreadyRendered) {
+            movableGameObject.translateMovableGameObject(0, (int) movableGameObject.getMovableGameObjectSpeed() * (int) gameAspectRatioY);
+            if (movableGameObject.getGameObjectLocation().y - movableGameObject.getGameObjectHeight() > gameHeight) {
+                if (!(movableGameObject instanceof BonusItem)) {
                     gamePointsScore += 100;
                     gamePointsCounter += 100;
                 }
-                if(gamePointsCounter / 5000 > 0)
-                {
-                    if(gameDifficultyLevel < 10)
-                    {
+                if (gamePointsCounter / 5000 > 0) {
+                    if (gameDifficultyLevel < 10) {
                         gameDifficultyLevel++;
                     }
                     gamePointsCounter = 0;
                 }
-                if(gamePointsScore > gamePointsHighScore)
-                {
+                if (gamePointsScore > gamePointsHighScore) {
                     gamePointsHighScore = gamePointsScore;
                 }
                 gameWorldObjects.remove(movableGameObject);
                 gameWorldObjects.add(movableGameObjectObstacleSpawner());
-                for(int i = 1; i < gameDifficultyLevel; i++)
-                {
-                    if((int)(gameRandomSeed.nextDouble() * 100) == 1)
-                    {
+                for (int i = 1; i < gameDifficultyLevel; i++) {
+                    if ((int) (gameRandomSeed.nextDouble() * 100) == 1) {
                         gameWorldObjects.add(movableGameObjectObstacleSpawner());
                     }
                 }
-            }
-            else
-            {
-                if(GameObject.collision(gamePlayerCharacter, movableGameObject))
-                {
-                    if(movableGameObject instanceof BonusItemGold)
-                    {
-                        gamePointsScore += ((BonusItemGold)movableGameObject).getBonusItemPointValue();
-                        gamePointsCounter += ((BonusItemGold)movableGameObject).getBonusItemPointValue();
-                        if(gamePointsCounter / 5000 > 0)
-                        {
-                            if(gameDifficultyLevel < 10)
-                            {
+            } else {
+                if (GameObject.collision(gamePlayerCharacter, movableGameObject)) {
+                    if (movableGameObject instanceof BonusItemGold) {
+                        gamePointsScore += ((BonusItemGold) movableGameObject).getBonusItemPointValue();
+                        gamePointsCounter += ((BonusItemGold) movableGameObject).getBonusItemPointValue();
+                        if (gamePointsCounter / 5000 > 0) {
+                            if (gameDifficultyLevel < 10) {
                                 gameDifficultyLevel++;
                             }
                             gamePointsCounter = 0;
                         }
-                        if(gamePointsScore > gamePointsHighScore)
-                        {
+                        if (gamePointsScore > gamePointsHighScore) {
                             gamePointsHighScore = gamePointsScore;
                         }
                         gameWorldObjects.remove(movableGameObject);
                         gameWorldObjects.add(movableGameObjectObstacleSpawner());
-                    }
-                    else
-                    {
-                        if(gamePlayerCharacterContinuesRemaining > 0)
-                        {
+                    } else {
+                        if (gamePlayerCharacterContinuesRemaining > 0) {
                             gamePlayerCharacterContinuesRemaining--;
                             gamePointsCounter = 0;
-                            if(gameDifficultyLevel - 3 >= 0)
-                            {
+                            if (gameDifficultyLevel - 3 >= 0) {
                                 gameDifficultyLevel -= 3;
-                            }
-                            else
-                            {
+                            } else {
                                 gameDifficultyLevel = 0;
                             }
                             gameWorldObjects.remove(movableGameObject);
+                        } else {
+                            gameOver = true;
                         }
-                        else{
-                            gameOver = true;}
                     }
                 }
             }
+        }
+    }
+
+
+    public void gameFrameDraw(){
+        if(getHolder().getSurface().isValid()){
+            Canvas gameCanvas = getHolder().lockCanvas();
+            gameCanvas.drawBitmap(gameBackground.background, gameBackground.x, gameBackground.y, gamePaint);
+
+            getHolder().unlockCanvasAndPost(gameCanvas);
+        }
+    }
+
+    public void gameThreadSleep(){
+        try {
+            Thread.sleep(1000 / 120); //1000 ms / 120 frames per second = 8.33 ms
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void gameResume(){
+
+        gameThread = new Thread(this);
+        gameThread.start();
+
+    }
+
+    public void gamePause(){
+
+        try {
+            gameThread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -334,10 +304,20 @@ public class Game extends SurfaceView implements Runnable
      * Default constructor for objects of class Game
      * Need to change method calls to reflect change to Android environment
      */
-    public Game(Context context) {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public Game(Context context, int gameWidth, int gameHeight) {
         super(context);
 
+        this.gameWidth = gameWidth;
+        this.gameHeight = gameHeight;
+        gameAspectRatioX = 1920f / gameWidth;
+        gameAspectRatioY = 1080f / gameHeight; //Using common values of 1920 x 1080 resolution
 
+        gameBackground = new Background(gameWidth, gameHeight, getResources());
+
+        gamePaint = new Paint();
+
+        gameInitialize();
     }
 
 }
