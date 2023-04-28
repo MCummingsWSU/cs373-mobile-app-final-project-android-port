@@ -138,8 +138,6 @@ public class Game extends SurfaceView implements Runnable {
         {
             gameWorldObjects.add(movableGameObjectObstacleSpawner());
         }
-
-        run();
     }
 
     /**
@@ -225,7 +223,36 @@ public class Game extends SurfaceView implements Runnable {
         if(getHolder().getSurface().isValid()){
             Canvas gameCanvas = getHolder().lockCanvas();
             gameCanvas.drawBitmap(gameBackground.background, gameBackground.x, gameBackground.y, gamePaint);
+            gameCanvas.drawRect(gamePlayerCharacter.getGameObjectBounds(), gamePlayerCharacter.getGameObjectPaint());
+            for(MovableGameObject movableGameObject: gameWorldObjects)
+            {
+                gameCanvas.drawRect(movableGameObject.getGameObjectBounds(), movableGameObject.getGameObjectPaint()); //Obstacles and BonusItems
+            }
 
+            gamePaint.setTypeface(Typeface.create("Consolas", Typeface.NORMAL));
+            gamePaint.setColor(Color.WHITE);
+            gameCanvas.drawText(String.valueOf(gamePointsScore), gameWidth - gamePaint.measureText(String.valueOf(gamePointsScore)) - 16, 22, gamePaint);
+            gameCanvas.drawText("LIVES: " + gamePlayerCharacterContinuesRemaining, 8, 22, gamePaint);
+            gameCanvas.drawText("DIFFICULTY: " + gameDifficultyLevel, 8, 44, gamePaint);
+
+            gamePaint.setColor(Color.GREEN);
+            gameCanvas.drawText(("HIGH SCORE: " + gamePointsHighScore), gameWidth - gamePaint.measureText(("HIGH SCORE: " + gamePointsHighScore)) - 16, 44, gamePaint);
+
+            gamePaint.setColor(Color.WHITE);
+            gamePaint.setTextSize(11);
+            gameCanvas.drawText("Spacebar to start a new game", gameWidth - gamePaint.measureText("Spacebar to start a new game") - 16, 55, gamePaint);
+            gameCanvas.drawText("A to move left", gameWidth - gamePaint.measureText("A to move left") - 16, 66, gamePaint);
+            gameCanvas.drawText("D to move right", gameWidth - gamePaint.measureText("D to move right") - 16, 77, gamePaint);
+            gameCanvas.drawText("Avoid RED!", gameWidth - gamePaint.measureText("Avoid RED!") - 16, 88, gamePaint);
+            gameCanvas.drawText("Touch GOLD for points!", gameWidth - gamePaint.measureText("Touch GOLD for points!") - 16, 99, gamePaint);
+
+
+            if(gameOver)
+            {
+                gamePaint.setTextSize(88);
+                gameCanvas.drawText("GAME", (float)gameWidth / 2 - (float)gameWidth / 4, (float)gameHeight / 2, gamePaint);
+                gameCanvas.drawText("OVER", (float)gameWidth / 2 - (float)gameWidth / 4, (float)gameHeight / 2 + 88, gamePaint);
+            }
             getHolder().unlockCanvasAndPost(gameCanvas);
         }
     }
@@ -252,51 +279,6 @@ public class Game extends SurfaceView implements Runnable {
             gameThread.join();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Method to draw objects after the game's conditions are initialized using Graphics package
-     * Need to rewrite to use Android packages!!!
-     */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void gameGraphicsInitialRender(Canvas gameGraphics)
-    {
-        Paint gameGraphicsBackgroundColor = new Paint(Color.GRAY);
-        Paint gameGraphicsText = new Paint();
-
-        gameGraphics.drawRect(0, 0, gameWidth, gameHeight, gameGraphicsBackgroundColor); //Background
-
-        gameGraphics.drawRect(gamePlayerCharacter.getGameObjectBounds(), gamePlayerCharacter.getGameObjectPaint()); //Player
-
-        for(MovableGameObject movableGameObject: gameWorldObjects)
-        {
-            gameGraphics.drawRect(movableGameObject.getGameObjectBounds(), movableGameObject.getGameObjectPaint()); //Obstacles and BonusItems
-        }
-
-        gameGraphicsText.setTypeface(Typeface.create("Consolas", Typeface.NORMAL));
-        gameGraphicsText.setColor(Color.WHITE);
-        gameGraphics.drawText(String.valueOf(gamePointsScore), gameWidth - gameGraphicsText.measureText(String.valueOf(gamePointsScore)) - 16, 22, gameGraphicsText);
-        gameGraphics.drawText("LIVES: " + gamePlayerCharacterContinuesRemaining, 8, 22, gameGraphicsText);
-        gameGraphics.drawText("DIFFICULTY: " + gameDifficultyLevel, 8, 44, gameGraphicsText);
-
-        gameGraphicsText.setColor(Color.GREEN);
-        gameGraphics.drawText(("HIGH SCORE: " + gamePointsHighScore), gameWidth - gameGraphicsText.measureText(("HIGH SCORE: " + gamePointsHighScore)) - 16, 44, gameGraphicsText);
-
-        gameGraphicsText.setColor(Color.WHITE);
-        gameGraphicsText.setTextSize(11);
-        gameGraphics.drawText("Spacebar to start a new game", gameWidth - gameGraphicsText.measureText("Spacebar to start a new game") - 16, 55, gameGraphicsText);
-        gameGraphics.drawText("A to move left", gameWidth - gameGraphicsText.measureText("A to move left") - 16, 66, gameGraphicsText);
-        gameGraphics.drawText("D to move right", gameWidth - gameGraphicsText.measureText("D to move right") - 16, 77, gameGraphicsText);
-        gameGraphics.drawText("Avoid RED!", gameWidth - gameGraphicsText.measureText("Avoid RED!") - 16, 88, gameGraphicsText);
-        gameGraphics.drawText("Touch GOLD for points!", gameWidth - gameGraphicsText.measureText("Touch GOLD for points!") - 16, 99, gameGraphicsText);
-
-
-        if(gameOver)
-        {
-            gameGraphicsText.setTextSize(88);
-            gameGraphics.drawText("GAME", (float)gameWidth / 2 - (float)gameWidth / 4, (float)gameHeight / 2, gameGraphicsText);
-            gameGraphics.drawText("OVER", (float)gameWidth / 2 - (float)gameWidth / 4, (float)gameHeight / 2 + 88, gameGraphicsText);
         }
     }
 

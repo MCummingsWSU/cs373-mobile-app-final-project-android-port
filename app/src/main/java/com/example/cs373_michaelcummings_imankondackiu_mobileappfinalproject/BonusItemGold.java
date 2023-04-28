@@ -26,14 +26,9 @@ public class BonusItemGold extends BonusItem
     @RequiresApi(api = Build.VERSION_CODES.O)
     public BonusItemGold()
     {
+        super();
         this.setGameObjectName(bonusItemName);
-        this.setGameObjectColor(bonusItemColor);
-        this.setGameObjectLocation(0, 0);
-        this.setGameObjectWidth(bonusItemWidth);
-        this.setGameObjectHeight(bonusItemHeight);
-        this.setMovableGameObjectSpeed(bonusItemSpeed);
         this.setBonusItemPointValue(GOLD_POINT_VALUE);
-        this.setGameObjectNoCollide(false);
     }
 
     /**
@@ -41,14 +36,10 @@ public class BonusItemGold extends BonusItem
      */
     public BonusItemGold(int x, int y)
     {
+        super();
         this.setGameObjectName(bonusItemName);
-        this.setGameObjectColor(bonusItemColor);
-        this.setGameObjectLocation(x, y);
-        this.setGameObjectWidth(bonusItemWidth);
-        this.setGameObjectHeight(bonusItemHeight);
-        this.setMovableGameObjectSpeed(bonusItemSpeed);
         this.setBonusItemPointValue(GOLD_POINT_VALUE);
-        this.setGameObjectNoCollide(false);
+        this.setGameObjectLocation(x, y);
     }
 
     /**

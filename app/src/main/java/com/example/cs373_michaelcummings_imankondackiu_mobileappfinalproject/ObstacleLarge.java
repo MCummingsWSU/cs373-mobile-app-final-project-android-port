@@ -24,14 +24,11 @@ public class ObstacleLarge extends Obstacle
      */
     public ObstacleLarge()
     {
+        super();
         this.setGameObjectName(obstacleName);
-        this.setGameObjectColor(obstacleColor);
-        this.obstaclePaint.setColor(obstacleColor.toArgb());
-        this.setGameObjectLocation(0, 0);
         this.setGameObjectWidth(obstacleWidth);
         this.setGameObjectHeight(obstacleHeight);
         this.setMovableGameObjectSpeed(obstacleSpeed);
-        this.setGameObjectNoCollide(false);
     }
 
     /**
@@ -39,14 +36,12 @@ public class ObstacleLarge extends Obstacle
      */
     public ObstacleLarge(int x, int y)
     {
+        super();
         this.setGameObjectName(obstacleName);
-        this.setGameObjectColor(obstacleColor);
-        this.obstaclePaint.setColor(obstacleColor.toArgb());
-        this.setGameObjectLocation(x, y);
         this.setGameObjectWidth(obstacleWidth);
         this.setGameObjectHeight(obstacleHeight);
         this.setMovableGameObjectSpeed(obstacleSpeed);
-        this.setGameObjectNoCollide(false);
+        this.setGameObjectLocation(x, y);
     }
 }
 
