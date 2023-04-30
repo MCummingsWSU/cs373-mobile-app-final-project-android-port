@@ -71,6 +71,14 @@ public class Game extends SurfaceView implements Runnable{
             mCanvas = mGameSurfaceHolder.lockCanvas();
             mCanvas.drawColor(Color.GRAY); //Background
 
+            mPaint.setColor(Color.WHITE);
+            mPaint.setTextSize(mFontSize);
+            mCanvas.drawText(
+                    "Score: " + mGamePointsScore,
+                    mScreenWidth - (mPaint.measureText("Score: " + mGamePointsScore) + mFontMargin),
+                    mFontSize,
+                    mPaint);
+
             if(DEBUGGING){
                 printDebuggingText();
             }
