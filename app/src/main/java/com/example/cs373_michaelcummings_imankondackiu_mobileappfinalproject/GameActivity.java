@@ -33,11 +33,13 @@ public class GameActivity extends Activity {
     @Override
     protected void onResume(){
         super.onResume();
+        mObstacleGame.resume();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
+        mObstacleGame.pause();
     }
 }
 
