@@ -31,6 +31,7 @@ public class Game extends SurfaceView implements Runnable{
     private int mGamePlayerContinuesRemaining;
     private long mGamePointsScore;
     private long mGamePointsScoreCounter;
+    private long mGamePointsScoreHighScore;
     private int mGameDifficultyLevel;
     private Random mGameRandomGenerator;
     private Thread mGameThread = null;
@@ -73,10 +74,22 @@ public class Game extends SurfaceView implements Runnable{
 
             mPaint.setColor(Color.WHITE);
             mPaint.setTextSize(mFontSize);
+
             mCanvas.drawText(
                     "Score: " + mGamePointsScore,
                     mScreenWidth - (mPaint.measureText("Score: " + mGamePointsScore) + mFontMargin),
                     mFontSize,
+                    mPaint);
+            mCanvas.drawText(
+                    "Lives: " + mGamePlayerContinuesRemaining,
+                    mScreenWidth - (mPaint.measureText("Lives: " + mGamePlayerContinuesRemaining) + mFontMargin),
+                    mFontSize * 2,
+                    mPaint);
+            mPaint.setColor(Color.GREEN);
+            mCanvas.drawText(
+                    "High Score: " + mGamePointsScoreHighScore,
+                    mScreenWidth - (mPaint.measureText("High Score: " + mGamePointsScoreHighScore) + mFontMargin),
+                    mFontSize * 3,
                     mPaint);
 
             if(DEBUGGING){
@@ -90,6 +103,7 @@ public class Game extends SurfaceView implements Runnable{
     private void printDebuggingText(){
         int debugSize = mFontSize / 2;
         int debugStart = 150;
+        mPaint.setColor(Color.WHITE);
         mPaint.setTextSize(debugSize);
         mCanvas.drawText(
                 "FPS: " + mFramesPerSecond,
