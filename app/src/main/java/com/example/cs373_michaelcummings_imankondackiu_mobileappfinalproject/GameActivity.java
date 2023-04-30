@@ -1,40 +1,43 @@
 package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 
+import android.app.Activity;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Display;
+import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends Activity {
 
-    private Game gameView;
+    private Game mObstacleGame;
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        Point point = new Point();
-        getWindowManager().getDefaultDisplay().getSize(point); //Gets the size of a pixel on the user's device screen
+        Display gameDisplay = getWindowManager().getDefaultDisplay();
+        Point gameSize = new Point();
+        gameDisplay.getSize(gameSize);
+        mObstacleGame = new Game(this, gameSize.x, gameSize.y);
 
-        gameView = new Game(this, point.x, point.y);
+        setContentView(mObstacleGame);
+    }
 
-        setContentView(gameView);
+    @Override
+    protected void onResume(){
+        super.onResume();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        gameView.gamePause();
-    }
-
-    @Override
-    protected  void onResume(){
-        super.onResume();
-        gameView.gameResume();
     }
 }
+

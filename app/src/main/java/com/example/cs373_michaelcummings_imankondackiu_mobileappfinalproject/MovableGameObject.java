@@ -46,9 +46,6 @@ public class MovableGameObject implements GameObject
         this.gameObjectSpeed = 0;
         this.gameObjectNoCollide = false;
 
-        this.gameObjectWidth *= (int) Game.gameAspectRatioX;
-        this.gameObjectHeight *= (int) Game.gameAspectRatioY;
-
         this.gameObjectBitmap = Bitmap.createScaledBitmap(gameObjectBitmap, (int)gameObjectWidth, (int)gameObjectHeight, false);
     }
 
