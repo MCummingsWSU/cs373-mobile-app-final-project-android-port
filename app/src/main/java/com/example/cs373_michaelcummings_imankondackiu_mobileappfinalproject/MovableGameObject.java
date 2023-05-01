@@ -17,7 +17,7 @@ import androidx.annotation.RequiresApi;
  * Rewritten for Android Studio
  *
  * @author Michael Cummings
- * @version 4.28.2023
+ * @version 5.1.2023
  */
 public class MovableGameObject implements GameObject
 {
