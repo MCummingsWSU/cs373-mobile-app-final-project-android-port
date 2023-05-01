@@ -37,6 +37,7 @@ public class Game extends SurfaceView implements Runnable{
     private Thread mGameThread = null;
     private volatile boolean mPlaying;
     private boolean mPaused = true;
+    mGamePlayerCharacter = new Player();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Game(Context context, int screenWidth, int screenHeight){

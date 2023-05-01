@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -21,8 +21,9 @@ import androidx.annotation.RequiresApi;
  */
 public class MovableGameObject implements GameObject
 {
+    private RectF gameObjectBounds;
     private Point gameObjectLocation = new Point();
-    private double gameObjectWidth, gameObjectHeight, gameObjectSpeed;
+    private float gameObjectWidth, gameObjectHeight, gameObjectVelocityX, gameObjectVelocityY;
     private String gameObjectName;
     private Color gameObjectColor;
     private boolean gameObjectNoCollide;
@@ -34,16 +35,18 @@ public class MovableGameObject implements GameObject
      * Default constructor for MovableGameObject
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public MovableGameObject()
+    public MovableGameObject(int screenWidth)
     {
         this.gameObjectName = "ObjectName";
         this.gameObjectColor = Color.valueOf(Color.RED);
         this.gameObjectPaint.setColor(this.gameObjectColor.toArgb());
         this.gameObjectBitmap = BitmapFactory.decodeResource(this.gameObjectResources, R.color.red);
         this.gameObjectLocation.set(0,0);
-        this.gameObjectWidth = 1;
-        this.gameObjectHeight = 1;
-        this.gameObjectSpeed = 0;
+        this.gameObjectWidth = screenWidth / 100;
+        this.gameObjectHeight = screenWidth / 100;
+        this.gameObjectBounds = new RectF();
+        this.gameObjectVelocityX = 0;
+        this.gameObjectVelocityY = 0;
         this.gameObjectNoCollide = false;
 
         this.gameObjectBitmap = Bitmap.createScaledBitmap(gameObjectBitmap, (int)gameObjectWidth, (int)gameObjectHeight, false);
@@ -53,7 +56,7 @@ public class MovableGameObject implements GameObject
      * Overloaded constructor for objects of class MovableGameObject
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public MovableGameObject(Color color, int locationX, int locationY, String name, double width, double height, double speed, boolean noCollide)
+    public MovableGameObject(Color color, int locationX, int locationY, String name, float width, float height, float vx, float vy, boolean noCollide)
     {
         this.gameObjectName = name;
         this.gameObjectColor = color;
@@ -62,8 +65,20 @@ public class MovableGameObject implements GameObject
         this.gameObjectLocation.set(locationX, locationY);
         this.gameObjectWidth = width;
         this.gameObjectHeight = height;
-        this.gameObjectSpeed = speed;
+
+        this.gameObjectBounds = new RectF(
+                this.gameObjectLocation.x,
+                this.gameObjectLocation.y,
+                (this.gameObjectLocation.x + this.gameObjectWidth),
+                (this.gameObjectLocation.y + this.gameObjectHeight)
+        );
+
+        this.gameObjectVelocityX = vx;
+        this.gameObjectVelocityY = vy;
         this.gameObjectNoCollide = noCollide;
+
+        this.gameObjectBitmap = Bitmap.createScaledBitmap(gameObjectBitmap, (int)gameObjectWidth, (int)gameObjectHeight, false);
+
     }
 
     /**
@@ -135,7 +150,7 @@ public class MovableGameObject implements GameObject
      *
      * @param   width
      */
-    public void setGameObjectWidth(double width)
+    public void setGameObjectWidth(float width)
     {
         this.gameObjectWidth = width;
     }
@@ -145,7 +160,7 @@ public class MovableGameObject implements GameObject
      *
      * @return  width
      */
-    public double getGameObjectWidth()
+    public float getGameObjectWidth()
     {
         return this.gameObjectWidth;
     }
@@ -155,7 +170,7 @@ public class MovableGameObject implements GameObject
      *
      * @param   height
      */
-    public void setGameObjectHeight(double height)
+    public void setGameObjectHeight(float height)
     {
         this.gameObjectHeight = height;
     }
@@ -165,7 +180,7 @@ public class MovableGameObject implements GameObject
      *
      * @return  height
      */
-    public double getGameObjectHeight()
+    public float getGameObjectHeight()
     {
         return this.gameObjectHeight;
     }
@@ -175,7 +190,7 @@ public class MovableGameObject implements GameObject
      *
      * @param   dw, dh
      */
-    public void growGameObjectSize(double dw, double dh)
+    public void growGameObjectSize(float dw, float dh)
     {
         this.gameObjectWidth = this.gameObjectWidth + dw;
         this.gameObjectHeight = this.gameObjectHeight + dh;
@@ -187,7 +202,7 @@ public class MovableGameObject implements GameObject
      *
      * @param   dw, dh
      */
-    public void shrinkGameObjectSize(double dw, double dh)
+    public void shrinkGameObjectSize(float dw, float dh)
     {
         this.growGameObjectSize(-dw, -dh);
     }
@@ -195,12 +210,11 @@ public class MovableGameObject implements GameObject
     /**
      * Method to return a Rectangle with dimensions equal to the coordinate boundaries of the GameObject
      */
-    public Rect getGameObjectBounds(){
-        return new Rect(
-                this.gameObjectLocation.x,
-                this.gameObjectLocation.y,
-                (int)this.gameObjectWidth + this.gameObjectLocation.x,
-                (int)this.gameObjectHeight + this.gameObjectLocation.y);
+    public void setGameObjectBounds(RectF gameObjectBounds) {
+        this.gameObjectBounds = gameObjectBounds;
+    }
+    public RectF getGameObjectBounds() {
+        return gameObjectBounds;
     }
 
     /**
@@ -213,44 +227,34 @@ public class MovableGameObject implements GameObject
         this.gameObjectNoCollide = noCollide;
     }
 
-    /**
-     * Method to return true if a GameObject should not collide with other GameObjects
-     *
-     * @return  noCollide
-     */
     public boolean getGameObjectNoCollide()
     {
         return this.gameObjectNoCollide;
     }
 
-    /**
-     * Method to set a MovableGameObject's speed
-     *
-     * @param speed
-     */
-    public void setMovableGameObjectSpeed(int speed)
-    {
-        this.gameObjectSpeed = speed;
-    }
-
-    /**
-     * Method to return a MovableGameObject's speed
-     *
-     * @return  speed
-     */
-    public double getMovableGameObjectSpeed()
-    {
-        return this.gameObjectSpeed;
-    }
-
-    /**
-     * Method to translate a MovableGameObject along the x or y axis
-     *
-     * @param dx, dy
-     */
     public void translateMovableGameObject(int dx, int dy)
     {
         this.gameObjectLocation.offset(dx, dy);
+    }
+
+    public float getGameObjectVelocityX() {
+        return gameObjectVelocityX;
+    }
+
+    public void setGameObjectVelocityX(float gameObjectVelocityX) {
+        this.gameObjectVelocityX = gameObjectVelocityX;
+    }
+
+    public float getGameObjectVelocityY() {
+        return gameObjectVelocityY;
+    }
+
+    public void setGameObjectVelocityY(float gameObjectVelocityY) {
+        this.gameObjectVelocityY = gameObjectVelocityY;
+    }
+
+    public void gameObjectUpdate(long fps){
+
     }
 }
 

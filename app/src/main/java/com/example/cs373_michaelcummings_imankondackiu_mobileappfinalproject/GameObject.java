@@ -3,7 +3,7 @@ package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Rect;
+import android.graphics.RectF;
 
 
 /**
@@ -56,7 +56,7 @@ public interface GameObject
     void setGameObjectLocation(int x, int y);
 
     /**
-     * Method to set a GameObject's location on a 2D grid using double x and y-coordinates
+     * Method to set a GameObject's location on a 2D grid using float x and y-coordinates
      *
      * @return  x, y
      */
@@ -67,35 +67,35 @@ public interface GameObject
      *
      * @param   width GameObject's height
      */
-    void setGameObjectWidth(double width);
+    void setGameObjectWidth(float width);
 
     /**
      * Method to return a GameObject's width
      *
      * @return  width
      */
-    double getGameObjectWidth();
+    float getGameObjectWidth();
 
     /**
      * Method to set a GameObject's height on a 2D grid
      *
      * @param height GameObject's height
      */
-    void setGameObjectHeight(double height);
+    void setGameObjectHeight(float height);
 
     /**
      * Method to return a GameObject's height
      *
      * @return height
      */
-    double getGameObjectHeight();
+    float getGameObjectHeight();
 
     /**
      * Method to grow a GameObject's width and height by dw, dh
      *
      * @param   dw, dh
      */
-    void growGameObjectSize(double dw, double dh);
+    void growGameObjectSize(float dw, float dh);
 
     /**
      * Method to shrink a GameObject's width and height by dw, dh
@@ -103,12 +103,12 @@ public interface GameObject
      *
      * @param   dw, dh
      */
-    void shrinkGameObjectSize(double dw, double dh);
+    void shrinkGameObjectSize(float dw, float dh);
 
     /**
      * Method to return a Rectangle whose dimensions are equal to the boundaries of the GameObject
      */
-    Rect getGameObjectBounds();
+    RectF getGameObjectBounds();
 
     /**
      * Method to return true if two GameObjects intersect at any point
@@ -119,7 +119,7 @@ public interface GameObject
     {
         if(!a.getGameObjectNoCollide() && !b.getGameObjectNoCollide())
         {
-            return Rect.intersects(a.getGameObjectBounds(), b.getGameObjectBounds());
+            return RectF.intersects(a.getGameObjectBounds(), b.getGameObjectBounds());
         }
         return false;
     }
@@ -138,5 +138,7 @@ public interface GameObject
      * @return  noCollide
      */
     boolean getGameObjectNoCollide();
+
+    void gameObjectUpdate(long fps);
 }
 

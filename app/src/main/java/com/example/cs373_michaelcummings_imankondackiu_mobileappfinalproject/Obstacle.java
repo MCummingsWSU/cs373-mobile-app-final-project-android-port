@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
@@ -22,6 +23,7 @@ import androidx.annotation.RequiresApi;
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class Obstacle extends MovableGameObject
 {
+    RectF obstacleBounds;
     String obstacleName = "Obstacle";
     Color obstacleColor = valueOf(RED);
     Paint obstaclePaint = new Paint();
@@ -29,7 +31,8 @@ public class Obstacle extends MovableGameObject
     Resources obstacleResources;
     int obstacleWidth = 16;
     int obstacleHeight = 16;
-    int obstacleSpeed = 2;
+    int obstacleVelocityX = 0;
+    int obstacleVelocityY = 2;
 
     /**
      * Default constructor for objects of class Obstacle
@@ -43,7 +46,8 @@ public class Obstacle extends MovableGameObject
         this.setGameObjectLocation(0, 0);
         this.setGameObjectWidth(obstacleWidth);
         this.setGameObjectHeight(obstacleHeight);
-        this.setMovableGameObjectSpeed(obstacleSpeed);
+        this.setGameObjectVelocityX(obstacleVelocityX);
+        this.setGameObjectVelocityY(obstacleVelocityY);
         this.setGameObjectNoCollide(false);
 
         this.obstacleBitmap = Bitmap.createScaledBitmap(obstacleBitmap, (int)getGameObjectWidth(), (int)getGameObjectHeight(), false);
@@ -52,16 +56,17 @@ public class Obstacle extends MovableGameObject
     /**
      * Overloaded constructor for objects of class Obstacle
      */
-    public Obstacle(int x, int y)
+    public Obstacle(int screenX, int locationX, int locationY)
     {
         this.setGameObjectName(obstacleName);
         this.setGameObjectColor(obstacleColor);
         this.obstaclePaint.setColor(obstacleColor.toArgb());
         this.obstacleBitmap = BitmapFactory.decodeResource(obstacleResources, R.color.red);
-        this.setGameObjectLocation(x, y);
+        this.setGameObjectLocation(locationX, locationY);
         this.setGameObjectWidth(obstacleWidth);
         this.setGameObjectHeight(obstacleHeight);
-        this.setMovableGameObjectSpeed(obstacleSpeed);
+        this.setGameObjectVelocityX(obstacleVelocityX);
+        this.setGameObjectVelocityY(obstacleVelocityY);
         this.setGameObjectNoCollide(false);
 
         this.obstacleBitmap = Bitmap.createScaledBitmap(obstacleBitmap, (int)getGameObjectWidth(), (int)getGameObjectHeight(), false);
