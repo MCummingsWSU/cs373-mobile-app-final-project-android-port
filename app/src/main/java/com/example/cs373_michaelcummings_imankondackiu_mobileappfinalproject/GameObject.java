@@ -1,5 +1,6 @@
 package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 
+import android.graphics.Paint;
 import android.graphics.RectF;
 
 
@@ -26,11 +27,17 @@ public interface GameObject
      */
     String getGameObjectName();
 
+    int getGameObjectColor();
+    void setGameObjectColor(int color);
+    Paint getGameObjectPaint();
+    void setGameObjectPaint(int flags);
+
     /**
      * Method to set a GameObject's width on a 2D grid
      *
      * @param   width GameObject's height
      */
+
     void setGameObjectWidth(float width);
 
     /**

@@ -77,8 +77,7 @@ public class Game extends SurfaceView implements Runnable{
             mCanvas = mGameSurfaceHolder.lockCanvas();
             mCanvas.drawColor(Color.GRAY); //Background
 
-            mPaint.setColor(Color.RED);
-            mCanvas.drawRect(mExampleObject.getGameObjectBounds(), mPaint);
+            mCanvas.drawRect(mExampleObject.getGameObjectBounds(), mExampleObject.getGameObjectPaint());
 
             mPaint.setColor(Color.WHITE);
             mPaint.setTextSize(mFontSize);

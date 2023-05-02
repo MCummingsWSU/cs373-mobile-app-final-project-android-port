@@ -1,5 +1,7 @@
 package com.example.cs373_michaelcummings_imankondackiu_mobileappfinalproject;
 
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Build;
 
@@ -18,6 +20,8 @@ public class MovableGameObject implements GameObject
     private RectF gameObjectBounds;
     private float gameObjectWidth, gameObjectHeight, gameObjectVelocityX, gameObjectVelocityY;
     private String gameObjectName;
+    private Paint gameObjectPaint;
+    private int gameObjectColor;
 
     /**
      * Default constructor for MovableGameObject
@@ -31,12 +35,16 @@ public class MovableGameObject implements GameObject
         this.gameObjectBounds = new RectF();
         this.gameObjectVelocityX = 0;
         this.gameObjectVelocityY = 0;
+
+        this.gameObjectColor = Color.BLACK;
+        this.gameObjectPaint = new Paint();
+        this.gameObjectPaint.setColor(gameObjectColor);
     }
 
     /**
      * Method to manually set a GameObject's name
      *
-     * @param   name
+     * @param   name    String name of the MovableGameObject
      */
     public void setGameObjectName(String name)
     {
@@ -53,10 +61,30 @@ public class MovableGameObject implements GameObject
         return this.gameObjectName;
     }
 
+    @Override
+    public int getGameObjectColor() {
+        return this.gameObjectColor;
+    }
+
+    @Override
+    public void setGameObjectColor(int color) {
+        this.gameObjectColor = color;
+    }
+
+    @Override
+    public Paint getGameObjectPaint() {
+        return this.gameObjectPaint;
+    }
+
+    @Override
+    public void setGameObjectPaint(int flags) {
+        this.gameObjectPaint = new Paint(flags);
+    }
+
     /**
      * Method to manually set a GameObject's width
      *
-     * @param   width
+     * @param   width   float representing the width of the MovableGameObject on the screen space
      */
     public void setGameObjectWidth(float width)
     {
@@ -76,7 +104,7 @@ public class MovableGameObject implements GameObject
     /**
      * Method to manually set a GameObject's height
      *
-     * @param   height
+     * @param   height  float representing the height of the MovableGameObject on the screen space
      */
     public void setGameObjectHeight(float height)
     {
