@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.os.Build;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -11,7 +12,6 @@ import android.view.SurfaceView;
 
 import androidx.annotation.RequiresApi;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Game extends SurfaceView implements Runnable{
@@ -26,8 +26,7 @@ public class Game extends SurfaceView implements Runnable{
     private int mScreenHeight;
     private int mFontSize;
     private int mFontMargin;
-    private ArrayList<MovableGameObject> mGameWorldObjects;
-    private Player mGamePlayerCharacter;
+    private MovableGameObject mExampleObject;
     private int mGamePlayerContinuesRemaining;
     private long mGamePointsScore;
     private long mGamePointsScoreCounter;
@@ -37,7 +36,6 @@ public class Game extends SurfaceView implements Runnable{
     private Thread mGameThread = null;
     private volatile boolean mPlaying;
     private boolean mPaused = true;
-    mGamePlayerCharacter = new Player();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Game(Context context, int screenWidth, int screenHeight){
@@ -53,6 +51,8 @@ public class Game extends SurfaceView implements Runnable{
         mGameSurfaceHolder = getHolder();
         mPaint = new Paint();
 
+        mExampleObject = new MovableGameObject(mScreenWidth);
+
         startNewGame();
     }
 
@@ -63,15 +63,22 @@ public class Game extends SurfaceView implements Runnable{
         mGamePointsScore = 0;
         mGamePointsScoreCounter = 0;
         mGameDifficultyLevel = 0;
-        mGameRandomGenerator = new Random();
-        mGameWorldObjects = new ArrayList<>();
-
+        mExampleObject.setGameObjectBounds(new RectF(
+                mScreenWidth / 2,
+                mScreenHeight / 2,
+                (mScreenWidth / 2) + mExampleObject.getGameObjectWidth(),
+                (mScreenHeight / 2) + mExampleObject.getGameObjectHeight()
+        )
+        );
     }
 
     private void draw(){
         if(mGameSurfaceHolder.getSurface().isValid()){
             mCanvas = mGameSurfaceHolder.lockCanvas();
             mCanvas.drawColor(Color.GRAY); //Background
+
+            mPaint.setColor(Color.RED);
+            mCanvas.drawRect(mExampleObject.getGameObjectBounds(), mPaint);
 
             mPaint.setColor(Color.WHITE);
             mPaint.setTextSize(mFontSize);
@@ -144,6 +151,8 @@ public class Game extends SurfaceView implements Runnable{
     }
 
     private void update() {
+
+        mExampleObject.gameObjectUpdate(mFramesPerSecond);
         
     }
 
