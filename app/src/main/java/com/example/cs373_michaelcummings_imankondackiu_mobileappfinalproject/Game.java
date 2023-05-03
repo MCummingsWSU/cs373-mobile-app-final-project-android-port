@@ -27,6 +27,7 @@ public class Game extends SurfaceView implements Runnable{
     private int mFontSize;
     private int mFontMargin;
     private Player mGamePlayerCharacter;
+    private Obstacle mExampleObstacle;
     private int mGamePlayerContinuesRemaining;
     private long mGamePointsScore;
     private long mGamePointsScoreCounter;
@@ -52,6 +53,7 @@ public class Game extends SurfaceView implements Runnable{
         mPaint = new Paint();
 
         mGamePlayerCharacter = new Player(screenWidth, screenHeight);
+        mExampleObstacle = new Obstacle(screenWidth);
 
         startNewGame();
     }
@@ -63,6 +65,7 @@ public class Game extends SurfaceView implements Runnable{
         mGamePointsScore = 0;
         mGamePointsScoreCounter = 0;
         mGameDifficultyLevel = 0;
+        mExampleObstacle.obstacleSpawn(mScreenWidth / 2, 0, 1);
 
     }
 
@@ -72,6 +75,8 @@ public class Game extends SurfaceView implements Runnable{
             mCanvas.drawColor(Color.GRAY); //Background
 
             mCanvas.drawRect(mGamePlayerCharacter.getGameObjectBounds(), mGamePlayerCharacter.playerPaint);
+
+            mCanvas.drawRect(mExampleObstacle.getGameObjectBounds(), mExampleObstacle.obstaclePaint);
 
             mPaint.setColor(Color.WHITE);
             mPaint.setTextSize(mFontSize);
@@ -114,6 +119,7 @@ public class Game extends SurfaceView implements Runnable{
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void run() {
 
@@ -143,9 +149,11 @@ public class Game extends SurfaceView implements Runnable{
     private void checkCollisions() {
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void update() {
 
         mGamePlayerCharacter.update(mFramesPerSecond);
+        mExampleObstacle.update(mFramesPerSecond);
         
     }
 

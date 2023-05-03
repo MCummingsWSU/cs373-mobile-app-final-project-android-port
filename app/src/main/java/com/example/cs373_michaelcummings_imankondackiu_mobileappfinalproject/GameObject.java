@@ -75,6 +75,6 @@ public interface GameObject
         return RectF.intersects(a.getGameObjectBounds(), b.getGameObjectBounds());
     }
 
-    void gameObjectUpdate(long fps);
+    void update(long fps);
 }
 

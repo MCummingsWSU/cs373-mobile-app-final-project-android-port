@@ -56,7 +56,8 @@ public class Player extends MovableGameObject{
         this.playerPaint.setColor(playerColor);
 
     }
-    void update(long fps){
+    @Override
+    public void update(long fps){
         if(playerMoving == LEFT){
             playerXCoord = playerXCoord - playerVelocityX / fps;
         }

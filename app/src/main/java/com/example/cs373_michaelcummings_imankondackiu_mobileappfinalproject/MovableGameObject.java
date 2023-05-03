@@ -167,7 +167,7 @@ public class MovableGameObject implements GameObject
      *
      * @param fps   screen's refresh rate
      */
-    public void gameObjectUpdate(long fps){
+    public void update(long fps){
         gameObjectBounds.left += (gameObjectVelocityX / fps);
         gameObjectBounds.top += (gameObjectVelocityY / fps);
         gameObjectBounds.right = gameObjectBounds.left + gameObjectWidth;
