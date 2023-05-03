@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.os.Build;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -26,7 +25,7 @@ public class Game extends SurfaceView implements Runnable{
     private int mScreenHeight;
     private int mFontSize;
     private int mFontMargin;
-    private MovableGameObject mExampleObject;
+    private Player mGamePlayerCharacter;
     private int mGamePlayerContinuesRemaining;
     private long mGamePointsScore;
     private long mGamePointsScoreCounter;
@@ -51,7 +50,7 @@ public class Game extends SurfaceView implements Runnable{
         mGameSurfaceHolder = getHolder();
         mPaint = new Paint();
 
-        mExampleObject = new MovableGameObject(mScreenWidth);
+        mGamePlayerCharacter = new Player(screenWidth);
 
         startNewGame();
     }
@@ -63,13 +62,8 @@ public class Game extends SurfaceView implements Runnable{
         mGamePointsScore = 0;
         mGamePointsScoreCounter = 0;
         mGameDifficultyLevel = 0;
-        mExampleObject.setGameObjectBounds(new RectF(
-                mScreenWidth / 2,
-                mScreenHeight / 2,
-                (mScreenWidth / 2) + mExampleObject.getGameObjectWidth(),
-                (mScreenHeight / 2) + mExampleObject.getGameObjectHeight()
-        )
-        );
+        mGamePlayerCharacter.reset(mScreenWidth, mScreenHeight);
+
     }
 
     private void draw(){
@@ -77,7 +71,7 @@ public class Game extends SurfaceView implements Runnable{
             mCanvas = mGameSurfaceHolder.lockCanvas();
             mCanvas.drawColor(Color.GRAY); //Background
 
-            mCanvas.drawRect(mExampleObject.getGameObjectBounds(), mExampleObject.getGameObjectPaint());
+            mCanvas.drawRect(mGamePlayerCharacter.getGameObjectBounds(), mGamePlayerCharacter.getGameObjectPaint());
 
             mPaint.setColor(Color.WHITE);
             mPaint.setTextSize(mFontSize);
@@ -151,7 +145,7 @@ public class Game extends SurfaceView implements Runnable{
 
     private void update() {
 
-        mExampleObject.gameObjectUpdate(mFramesPerSecond);
+        mGamePlayerCharacter.gameObjectUpdate(mFramesPerSecond);
         
     }
 
