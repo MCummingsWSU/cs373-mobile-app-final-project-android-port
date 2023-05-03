@@ -12,40 +12,70 @@ public class Player extends MovableGameObject{
     String playerName = "Player";
     int playerColor = Color.BLACK;
     Paint playerPaint;
-    float playerWidth = 16; //Denominator to place under screenWidth in constructor
-    float playerHeight = 16; //Denominator to place under screenHeight in constructor
+    float playerWidth = 48; //Denominator to place under screenWidth in constructor
+    float playerHeight = 48; //Denominator to place under screenHeight in constructor
     RectF playerBounds;
-    float playerVelocityX = 4;
+    float playerXCoord;
+    float playerVelocityX = 400;
     float playerVelocityY = 0;
+    private int mScreenWidth;
+    final int STOPPED = 0;
+    final int LEFT = 1;
+    final int RIGHT = 2;
+    private int playerMoving = STOPPED;
 
     /**
      * Default constructor for MovableGameObject
      *
-     * @param screenWidth   width of the device screen
+     * @param resolutionX   horizontal resolution of the device screen
+     * @param resolutionY   vertical resolution of the device screen
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Player(int screenWidth) {
-        super(screenWidth);
+    public Player(int resolutionX, int resolutionY) {
+        super(resolutionX, resolutionY);
+        mScreenWidth = resolutionX;
 
         this.setGameObjectName(playerName);
-        this.setGameObjectWidth(screenWidth / playerWidth);
-        this.setGameObjectHeight(screenWidth / playerHeight);
+        this.setGameObjectWidth(mScreenWidth / playerWidth);
+        this.setGameObjectHeight(resolutionY / playerHeight);
+        this.playerXCoord = mScreenWidth / 2;
+        float playerYCoord = resolutionY - 2 * this.getGameObjectHeight();
+
+        playerBounds = new RectF(
+                playerXCoord,
+                playerYCoord,
+                playerXCoord + playerWidth,
+                playerYCoord + playerHeight);
         this.setGameObjectBounds(playerBounds);
+
         this.setGameObjectVelocityX(playerVelocityX);
         this.setGameObjectVelocityY(playerVelocityY);
 
         this.setGameObjectColor(playerColor);
         this.playerPaint = new Paint();
-        this.playerPaint.setColor(this.getGameObjectColor());
+        this.playerPaint.setColor(playerColor);
 
     }
-    void reset(int screenWidth, int screenHeight){
-        this.setGameObjectBounds(new RectF(
-                screenWidth / 2,
-                screenHeight - this.getGameObjectHeight() * 2,
-                screenWidth / 2 + this.getGameObjectWidth(),
-                (screenHeight - this.getGameObjectHeight() * 2) + this.getGameObjectHeight()
-            )
-        );
+    void update(long fps){
+        if(playerMoving == LEFT){
+            playerXCoord = playerXCoord - playerVelocityX / fps;
+        }
+        if(playerMoving == RIGHT){
+            playerXCoord = playerXCoord + playerVelocityX / fps;
+        }
+        if(playerXCoord < 0){
+            playerXCoord = 0;
+        }
+        else if(playerXCoord + playerWidth > mScreenWidth){
+            playerXCoord = mScreenWidth - playerWidth;
+        }
+        playerBounds.left = playerXCoord;
+        playerBounds.right = playerXCoord + playerWidth;
+    }
+
+    void setPlayerMovementState(int state){
+
+        playerMoving = state;
+
     }
 }

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -50,7 +51,7 @@ public class Game extends SurfaceView implements Runnable{
         mGameSurfaceHolder = getHolder();
         mPaint = new Paint();
 
-        mGamePlayerCharacter = new Player(screenWidth);
+        mGamePlayerCharacter = new Player(screenWidth, screenHeight);
 
         startNewGame();
     }
@@ -62,7 +63,6 @@ public class Game extends SurfaceView implements Runnable{
         mGamePointsScore = 0;
         mGamePointsScoreCounter = 0;
         mGameDifficultyLevel = 0;
-        mGamePlayerCharacter.reset(mScreenWidth, mScreenHeight);
 
     }
 
@@ -71,7 +71,7 @@ public class Game extends SurfaceView implements Runnable{
             mCanvas = mGameSurfaceHolder.lockCanvas();
             mCanvas.drawColor(Color.GRAY); //Background
 
-            mCanvas.drawRect(mGamePlayerCharacter.getGameObjectBounds(), mGamePlayerCharacter.getGameObjectPaint());
+            mCanvas.drawRect(mGamePlayerCharacter.getGameObjectBounds(), mGamePlayerCharacter.playerPaint);
 
             mPaint.setColor(Color.WHITE);
             mPaint.setTextSize(mFontSize);
@@ -145,7 +145,7 @@ public class Game extends SurfaceView implements Runnable{
 
     private void update() {
 
-        mGamePlayerCharacter.gameObjectUpdate(mFramesPerSecond);
+        mGamePlayerCharacter.update(mFramesPerSecond);
         
     }
 
@@ -162,5 +162,28 @@ public class Game extends SurfaceView implements Runnable{
         mPlaying = true;
         mGameThread = new Thread(this);
         mGameThread.start();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent motionEvent){
+        switch (motionEvent.getAction() &
+                MotionEvent.ACTION_MASK){
+            case MotionEvent.ACTION_DOWN:
+                mPaused = false;
+                if(motionEvent.getX() > mScreenWidth / 2){
+                    //right side of the screen
+                    mGamePlayerCharacter.setPlayerMovementState(mGamePlayerCharacter.RIGHT);
+                }
+                else{
+                    //left side of the screen
+                    mGamePlayerCharacter.setPlayerMovementState(mGamePlayerCharacter.LEFT);
+                }
+                break;
+
+            case MotionEvent.ACTION_UP:
+                mGamePlayerCharacter.setPlayerMovementState(mGamePlayerCharacter.STOPPED);
+                break;
+        }
+        return true;
     }
 }

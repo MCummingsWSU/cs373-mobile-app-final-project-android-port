@@ -21,7 +21,7 @@ public class MovableGameObject implements GameObject
     private float gameObjectWidth, gameObjectHeight, gameObjectVelocityX, gameObjectVelocityY;
     private String gameObjectName;
     private Paint gameObjectPaint;
-    private int gameObjectColor;
+    private int gameObjectColor = Color.WHITE; //Default
 
     /**
      * Default constructor for MovableGameObject
@@ -36,9 +36,23 @@ public class MovableGameObject implements GameObject
         this.gameObjectVelocityX = 0;
         this.gameObjectVelocityY = 0;
 
-        this.gameObjectColor = Color.BLACK;
         this.gameObjectPaint = new Paint();
         this.gameObjectPaint.setColor(gameObjectColor);
+    }
+
+    public MovableGameObject(int screenWidth, int screenHeight){
+
+        this.gameObjectName = "ObjectName";
+        this.gameObjectWidth = screenWidth / 100;
+        this.gameObjectHeight = screenHeight / 100;
+        this.gameObjectBounds = new RectF();
+        this.gameObjectVelocityX = 0;
+        this.gameObjectVelocityY = 0;
+
+        this.gameObjectColor = gameObjectColor;
+        this.gameObjectPaint = new Paint();
+        this.gameObjectPaint.setColor(gameObjectColor);
+
     }
 
     /**
