@@ -27,7 +27,8 @@ public class Game extends SurfaceView implements Runnable{
     private int mFontSize;
     private int mFontMargin;
     private Player mGamePlayerCharacter;
-    private Obstacle mExampleObstacle;
+    private Obstacle[] mGameObstacles = new Obstacle[10];
+    private int mNumGameObstacles;
     private int mGamePlayerContinuesRemaining;
     private long mGamePointsScore;
     private long mGamePointsScoreCounter;
@@ -53,7 +54,11 @@ public class Game extends SurfaceView implements Runnable{
         mPaint = new Paint();
 
         mGamePlayerCharacter = new Player(screenWidth, screenHeight);
-        mExampleObstacle = new Obstacle(screenWidth);
+
+
+        for(int i = 0; i < mGameObstacles.length; i++){
+            mGameObstacles[i] = new Obstacle(screenWidth);
+        }
 
         startNewGame();
     }
@@ -65,7 +70,11 @@ public class Game extends SurfaceView implements Runnable{
         mGamePointsScore = 0;
         mGamePointsScoreCounter = 0;
         mGameDifficultyLevel = 0;
-        mExampleObstacle.obstacleSpawn(mScreenWidth / 2, 0, 1);
+        mGameRandomGenerator = new Random();
+
+        for(int i = 0; i < mGameObstacles.length; i++){
+            mGameObstacles[i].obstacleSpawn(mGameRandomGenerator.nextInt(mScreenWidth), 0, 1);
+        }
 
     }
 
@@ -76,7 +85,11 @@ public class Game extends SurfaceView implements Runnable{
 
             mCanvas.drawRect(mGamePlayerCharacter.getGameObjectBounds(), mGamePlayerCharacter.playerPaint);
 
-            mCanvas.drawRect(mExampleObstacle.getGameObjectBounds(), mExampleObstacle.obstaclePaint);
+
+            mPaint.setColor(Color.RED);
+            for(int i = 0; i < mGameObstacles.length; i++){
+                mCanvas.drawRect(mGameObstacles[i].getGameObjectBounds(), mPaint);
+            }
 
             mPaint.setColor(Color.WHITE);
             mPaint.setTextSize(mFontSize);
@@ -153,7 +166,10 @@ public class Game extends SurfaceView implements Runnable{
     private void update() {
 
         mGamePlayerCharacter.update(mFramesPerSecond);
-        mExampleObstacle.update(mFramesPerSecond);
+
+        for(int i = 0; i < mGameObstacles.length; i++) {
+            mGameObstacles[i].update(mFramesPerSecond);
+        }
         
     }
 
